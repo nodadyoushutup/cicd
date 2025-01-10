@@ -1,16 +1,44 @@
-services:
-  postgres:
-    image: postgres:14
-    container_name: postgres
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+services: 
+  postgres: 
+    image: postgres:14 
+    container_name: postgres 
+    environment: 
+      POSTGRES_USER: ${POSTGRES_USER} 
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD} 
+      POSTGRES_DB: ${POSTGRES_DB} 
+    ports: 
+      - "5432:5432" 
+    volumes: 
+      - postgres:/var/lib/postgresql/data 
+ 
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: jenkins
+    user: root
     ports:
-      - "5432:5432"
+      - "8080:8080"
+      - "50000:50000" # For Jenkins agents
+    environment:
+      JENKINS_OPTS: --httpPort=8080
     volumes:
-      - postgres:/var/lib/postgresql/data
+      - jenkins:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock # Allow Jenkins to manage Docker containers
 
-volumes:
-  postgres:
+  # jenkins-runner:
+  #   build:
+  #     context: ./jenkins-runner
+  #   container_name: jenkins-runner
+  #   depends_on:
+  #     - jenkins
+  #   environment:
+  #     JENKINS_URL: http://jenkins:8080
+  #     JENKINS_AGENT_NAME: ansible-terraform-runner
+  #     JENKINS_SECRET: ${JENKINS_SECRET} # Replace this with the actual secret key for the agent
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock # Allow the agent to run Docker commands
+
+volumes: 
+  postgres: 
+    driver: local 
+  jenkins:
     driver: local

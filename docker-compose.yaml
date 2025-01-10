@@ -14,15 +14,22 @@ services:
   jenkins:
     image: jenkins/jenkins:lts
     container_name: jenkins
-    user: root
     ports:
       - "8080:8080"
-      - "50000:50000" # For Jenkins agents
-    environment:
-      JENKINS_OPTS: --httpPort=8080
+      - "50000:50000"
+    # environment:
+    #   - JAVA_OPTS=-Djenkins.install.runSetupWizard=false
     volumes:
       - jenkins:/var/jenkins_home
-      - /var/run/docker.sock:/var/run/docker.sock # Allow Jenkins to manage Docker containers
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  dozzle:
+    image: amir20/dozzle:latest
+    container_name: dozzle
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 8081:8080
 
   # jenkins-runner:
   #   build:
@@ -39,6 +46,8 @@ services:
 
 volumes: 
   postgres: 
+    name: postgres
     driver: local 
   jenkins:
+    name: jenkins
     driver: local

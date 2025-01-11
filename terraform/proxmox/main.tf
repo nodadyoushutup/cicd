@@ -29,7 +29,7 @@ resource "proxmox_virtual_environment_file" "cloud_config" {
         -   path: /tmp/id_rsa
             permissions: '0600'
             content: |
-                ${file("/mnt/workspace/id_rsa").content}
+                ${file("/mnt/workspace/id_rsa")}
     runcmd:
         - timedatectl set-timezone America/New_York
         - cp /tmp/id_rsa /home/${var.VIRTUAL_MACHINE_USERNAME}/.ssh/id_rsa

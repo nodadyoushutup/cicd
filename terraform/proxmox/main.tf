@@ -11,6 +11,7 @@ resource "proxmox_virtual_environment_file" "cloud_config" {
     data = <<-EOF
     #cloud-config
     users:
+      - default
       - name: ubuntu
         groups:
           - sudo
@@ -18,6 +19,11 @@ resource "proxmox_virtual_environment_file" "cloud_config" {
         ssh_authorized_keys:
           - ${trimspace(data.local_file.ssh_public_key.content)}
         sudo: ALL=(ALL) NOPASSWD:ALL
+    write_files:
+    -   path: /tmp/example_file.txt
+        content: |
+            This is an example file created using cloud-init.
+        permissions: '0644'
     runcmd:
         - usermod -aG docker ubuntu
         - timedatectl set-timezone America/New_York
@@ -109,7 +115,7 @@ resource "proxmox_virtual_environment_vm" "development" {
     initialization {
         datastore_id = "virtualization"
         user_data_file_id = proxmox_virtual_environment_file.cloud_config.id
-
+        
         ip_config {
             ipv4 {
                 address = "192.168.1.101/24"

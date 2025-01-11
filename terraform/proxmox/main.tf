@@ -33,8 +33,6 @@ resource "proxmox_virtual_environment_file" "cicd_cloud_config" {
         - timedatectl set-timezone America/New_York
         - mkdir -p /mnt/epool/media
         - mkdir -p /mnt/eapp/cicd
-        - iscsiadm -m discovery -t sendtargets -p ${var.NAS_LOCAL_IP}
-        - iscsiadm -m node --targetname ${var.ISCSI_BASE_NAME}:cicd --portal ${var.NAS_LOCAL_IP}:3260 --login
         - mv /tmp/id_rsa /home/${var.VIRTUAL_MACHINE_USERNAME}/.ssh/id_rsa
         - mv /tmp/.gitconfig /home/${var.VIRTUAL_MACHINE_USERNAME}/.gitconfig
         - echo "done" > /tmp/cloud-config.done

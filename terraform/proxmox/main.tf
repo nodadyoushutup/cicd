@@ -1,20 +1,7 @@
-data "local_file" "ssh_public_key" {
-  filename = var.GITCONFIG
-}
-
-data "local_file" "ssh_private_key" {
-  filename = var.SSH_PRIVATE_KEY
-}
-
-data "local_file" "gitconfig" {
-  filename = var.SSH_PUBLIC_KEY
-}
-
-
 resource "proxmox_virtual_environment_file" "cicd_cloud_config" {
   content_type = "snippets"
   datastore_id = "local"
-  node_name    = "pve"
+  node_name    = var.PROXMOX_VE_SSH_NODE_NAME
 
   source_raw {
     data = <<-EOF
@@ -41,12 +28,12 @@ resource "proxmox_virtual_environment_file" "cicd_cloud_config" {
             encoding: b64
             content: ${base64encode(data.local_file.ssh_private_key.content)}
     mounts:
-        - ["192.168.1.100:/mnt/epool/media", "/mnt/epool/media", "nfs", "defaults,nofail", "1000", "1000"]
+        - ["${var.TF_VAR_NAS_LOCAL_IP}:/mnt/epool/media", "/mnt/epool/media", "nfs", "defaults,nofail", "1000", "1000"]
     runcmd:
         - timedatectl set-timezone America/New_York
         - mkdir -p /mnt/eapp/cicd
-        - iscsiadm -m discovery -t sendtargets -p 192.168.1.100
-        - iscsiadm -m node --targetname ${var.ISCSI_BASE_NAME}:cicd --portal 192.168.1.100:3260 --login
+        - iscsiadm -m discovery -t sendtargets -p ${var.TF_VAR_NAS_LOCAL_IP}
+        - iscsiadm -m node --targetname ${var.ISCSI_BASE_NAME}:cicd --portal ${var.TF_VAR_NAS_LOCAL_IP}:3260 --login
         - mv /tmp/id_rsa /home/${var.VIRTUAL_MACHINE_USERNAME}/.ssh/id_rsa
         - mv /tmp/.gitconfig /home/${var.VIRTUAL_MACHINE_USERNAME}/.gitconfig
         - echo "done" > /tmp/cloud-config.done
@@ -64,7 +51,7 @@ resource "proxmox_virtual_environment_vm" "development" {
     
     # REQUIRED
     ################################################
-    node_name = "pve"
+    node_name = var.PROXMOX_VE_SSH_NODE_NAME
 
     # OPTIONAL
     ################################################

@@ -6,6 +6,10 @@ data "local_file" "ssh_private_key" {
   filename = "/mnt/workspace/id_rsa"
 }
 
+data "local_file" "gitconfig" {
+  filename = "./.gitconfig"
+}
+
 
 resource "proxmox_virtual_environment_file" "cloud_config" {
   content_type = "snippets"
@@ -27,11 +31,10 @@ resource "proxmox_virtual_environment_file" "cloud_config" {
         sudo: ALL=(ALL) NOPASSWD:ALL
     write_files:
       - path: /tmp/.gitconfig
+        owner: ${var.VIRTUAL_MACHINE_USERNAME}:${var.VIRTUAL_MACHINE_USERNAME}
         permissions: '0600'
-        content: |
-            [user]
-                name = nodadyoushutup
-                email = admin@nodadyoushutup.com
+        encoding: b64
+        content: base64encode(data.local_file.gitconfig.content)
     runcmd:
       - timedatectl set-timezone America/New_York
       - cp /tmp/id_rsa /home/${var.VIRTUAL_MACHINE_USERNAME}/.ssh/id_rsa

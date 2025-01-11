@@ -1,3 +1,7 @@
-output "root" {
-  value = "${file("/mnt/workspace/id_rsa")}"
+locals {
+  proxmox = jsondecode(var.proxmox)
+}
+
+output "proxmox_object" {
+  value = local.proxmox
 }

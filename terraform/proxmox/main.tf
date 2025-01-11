@@ -11,7 +11,6 @@ resource "proxmox_virtual_environment_file" "cloud_config" {
     data = <<-EOF
     #cloud-config
     users:
-      - default
       - name: ubuntu
         groups:
           - sudo
@@ -110,11 +109,7 @@ resource "proxmox_virtual_environment_vm" "development" {
     initialization {
         datastore_id = "virtualization"
         user_data_file_id = proxmox_virtual_environment_file.cloud_config.id
-        # user_account {
-        #     keys = []
-        #     password = "ubuntu"
-        #     username = "ubuntu"
-        # }
+
         ip_config {
             ipv4 {
                 address = "192.168.1.101/24"

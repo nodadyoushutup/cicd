@@ -18,6 +18,11 @@ variable "PROXMOX_VE_SSH_NODE_ADDRESS" {
   default = null
 }
 
+variable "PROXMOX_VE_SSH_NODE_NAME" {
+  type = string
+  default = null
+}
+
 variable "VIRTUAL_MACHINE_USERNAME" {
   type = string
   default = null

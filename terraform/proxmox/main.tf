@@ -1,8 +1,39 @@
+data "local_file" "ssh_public_key" {
+  filename = "./id_rsa.pub"
+}
+
+resource "proxmox_virtual_environment_file" "cloud_config" {
+  content_type = "snippets"
+  datastore_id = "local"
+  node_name    = "pve"
+
+  source_raw {
+    data = <<-EOF
+    #cloud-config
+    users:
+      - default
+      - name: ubuntu
+        groups:
+          - sudo
+        shell: /bin/bash
+        ssh_authorized_keys:
+          - ${trimspace(data.local_file.ssh_public_key.content)}
+        sudo: ALL=(ALL) NOPASSWD:ALL
+    runcmd:
+        - usermod -aG docker ubuntu
+        - timedatectl set-timezone America/New_York
+        - echo "done" > /tmp/cloud-config.done
+    EOF
+
+    file_name = "cloud-config.yaml"
+  }
+}
+
 resource "proxmox_virtual_environment_vm" "development" {
-    # depends_on = [
-    #     proxmox_virtual_environment_download_file.cloud_image,
-    #     # proxmox_virtual_environment_file.cloud_config
-    # ]
+    depends_on = [
+        # proxmox_virtual_environment_download_file.cloud_image,
+        proxmox_virtual_environment_file.cloud_config
+    ]
     
     # REQUIRED
     ################################################
@@ -78,12 +109,12 @@ resource "proxmox_virtual_environment_vm" "development" {
 
     initialization {
         datastore_id = "virtualization"
-        # user_data_file_id = proxmox_virtual_environment_file.cloud_config.id
-        user_account {
-            keys = []
-            password = "ubuntu"
-            username = "ubuntu"
-        }
+        user_data_file_id = proxmox_virtual_environment_file.cloud_config.id
+        # user_account {
+        #     keys = []
+        #     password = "ubuntu"
+        #     username = "ubuntu"
+        # }
         ip_config {
             ipv4 {
                 address = "192.168.1.101/24"

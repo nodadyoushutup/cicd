@@ -14,10 +14,10 @@ resource "proxmox_virtual_environment_file" "cloud_config" {
       - default
       - name: ${var.VIRTUAL_MACHINE_USERNAME}
         groups:
-          - sudo docker
+            - sudo docker
         shell: /bin/bash
         ssh_authorized_keys:
-          - ${trimspace(data.local_file.ssh_public_key.content)}
+            - ${trimspace(data.local_file.ssh_public_key.content)}
         sudo: ALL=(ALL) NOPASSWD:ALL
     write_files:
         -   path: /tmp/.gitconfig
@@ -26,10 +26,6 @@ resource "proxmox_virtual_environment_file" "cloud_config" {
                 [user]
                     name = nodadyoushutup
                     email = admin@nodadyoushutup.com
-        -   path: /tmp/id_rsa
-            permissions: '0600'
-            content: |
-                ${file("/mnt/workspace/id_rsa")}
     runcmd:
         - timedatectl set-timezone America/New_York
         - cp /tmp/id_rsa /home/${var.VIRTUAL_MACHINE_USERNAME}/.ssh/id_rsa
@@ -145,7 +141,7 @@ resource "proxmox_virtual_environment_vm" "development" {
         keep_hugepages = null
     }
 
-    name = "development"
+    name = "cicd"
 
     network_device {
         bridge = "vmbr0"

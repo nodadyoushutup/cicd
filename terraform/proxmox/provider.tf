@@ -8,8 +8,8 @@ terraform {
 
 provider "proxmox" {
   endpoint = var.PROXMOX_VE_ENDPOINT
-  password = "terraform"
-  username = "terraform@pve"
+  password = var.PROXMOX_VE_PASSWORD
+  username = var.PROXMOX_VE_USERNAME
   random_vm_ids = true
   insecure = true
 }

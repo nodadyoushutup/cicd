@@ -12,4 +12,7 @@ provider "proxmox" {
   username = var.PROXMOX_VE_USERNAME
   random_vm_ids = true
   insecure = true
+  ssh {
+    agent = true
+  }
 }

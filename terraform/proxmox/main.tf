@@ -20,14 +20,12 @@ resource "proxmox_virtual_environment_file" "cicd_cloud_config" {
     #cloud-config
     hostname: cicd
     users:
-        -   default
-        -   name: ${var.VIRTUAL_MACHINE_USERNAME}
-            groups:
-                - sudo docker
-            shell: /bin/bash
-            ssh_authorized_keys:
-                - ${trimspace(data.local_file.ssh_public_key.content)}
-            sudo: ALL=(ALL) NOPASSWD:ALL
+      - default
+      - name: ubuntu
+        groups:
+          - sudo docker
+        shell: /bin/bash
+        sudo: ALL=(ALL) NOPASSWD:ALL
     runcmd:
       - echo "done" > /tmp/cloud-config.done
     EOF

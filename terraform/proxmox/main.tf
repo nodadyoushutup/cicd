@@ -131,8 +131,8 @@ resource "proxmox_virtual_environment_vm" "development" {
 
     started = true
 
-    up {
-        order = 1
+    startup {
+        order = 2
         up_delay = 0
         down_delay = 0
     }

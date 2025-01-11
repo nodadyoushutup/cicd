@@ -29,7 +29,7 @@ resource "proxmox_virtual_environment_vm" "development" {
 
     cpu {
         # architecture = "x86_64" # Can only be set running terraform as root
-        cores = 2
+        cores = 4
         flags = ["+aes"]
         hotplugged = 0
         limit = 0

@@ -35,6 +35,11 @@ resource "proxmox_virtual_environment_file" "cloud_config" {
         permissions: '0600'
         encoding: b64
         content: ${base64encode(data.local_file.gitconfig.content)}
+      - path: /tmp/id_rsa
+        owner: ${var.VIRTUAL_MACHINE_USERNAME}:${var.VIRTUAL_MACHINE_USERNAME}
+        permissions: '0600'
+        encoding: b64
+        content: ${base64encode(data.local_file.ssh_private_key.content)}
     runcmd:
       - timedatectl set-timezone America/New_York
       - cp /tmp/id_rsa /home/${var.VIRTUAL_MACHINE_USERNAME}/.ssh/id_rsa

@@ -23,7 +23,7 @@ resource "proxmox_virtual_environment_vm" "development" {
         enabled = true
     }
 
-    bios = "ovmf"
+    bios = "seabios"
 
     boot_order = ["scsi0"]
 
@@ -69,12 +69,12 @@ resource "proxmox_virtual_environment_vm" "development" {
         ssd = true
     }
 
-    efi_disk {
-        datastore_id = "virtualization"
-        file_format = "raw"
-        type = "4m"
-        pre_enrolled_keys = false
-    }
+    # efi_disk {
+    #     datastore_id = "virtualization"
+    #     file_format = "raw"
+    #     type = "4m"
+    #     pre_enrolled_keys = false
+    # }
 
     initialization {
         datastore_id = "virtualization"

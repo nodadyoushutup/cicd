@@ -37,3 +37,18 @@ variable "GITCONFIG" {
   type = string
   default = null
 }
+
+variable "NAS_LOCAL_IP" {
+  type = string
+  default = null
+}
+
+variable "NAS_ISCSI_CICD_BASE_NAME" {
+  type = string
+  default = null
+}
+
+variable "NAS_ISCSI_CICD_BASE_NAME" {
+  type = string
+  default = null
+}

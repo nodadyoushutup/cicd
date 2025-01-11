@@ -41,14 +41,14 @@ resource "proxmox_virtual_environment_file" "cicd_cloud_config" {
             encoding: b64
             content: ${base64encode(data.local_file.ssh_private_key.content)}
     mounts:
-        - ["192.168.1.100:/mnt/epool/media", "/mnt/efs", "nfs", "defaults,nofail", "1000", "1000"]
+        - ["192.168.1.100:/mnt/epool/media", "/mnt/epool/media", "nfs", "defaults,nofail", "1000", "1000"]
     runcmd:
-      - timedatectl set-timezone America/New_York
-      - mkdir -p /mnt/epool/media
-      - mv /tmp/id_rsa /home/${var.VIRTUAL_MACHINE_USERNAME}/.ssh/id_rsa
-      - mv /tmp/.gitconfig /home/${var.VIRTUAL_MACHINE_USERNAME}/.gitconfig
-      - chown ${var.VIRTUAL_MACHINE_USERNAME}:${var.VIRTUAL_MACHINE_USERNAME} /home/${var.VIRTUAL_MACHINE_USERNAME}/.gitconfig
-      - echo "done" > /tmp/cloud-config.done
+        - timedatectl set-timezone America/New_York
+        - mkdir -p /mnt/eapp/cicd
+        - iscsiadm -m node --targetname iqn.2005-10.org.freenas.ctl:cicd --portal 192.168.1.100:3260 --login
+        - mv /tmp/id_rsa /home/${var.VIRTUAL_MACHINE_USERNAME}/.ssh/id_rsa
+        - mv /tmp/.gitconfig /home/${var.VIRTUAL_MACHINE_USERNAME}/.gitconfig
+        - echo "done" > /tmp/cloud-config.done
     EOF
 
     file_name = "cicd-cloud-config.yaml"

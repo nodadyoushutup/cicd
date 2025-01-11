@@ -43,12 +43,7 @@ variable "NAS_LOCAL_IP" {
   default = null
 }
 
-variable "NAS_ISCSI_CICD_BASE_NAME" {
-  type = string
-  default = null
-}
-
-variable "NAS_ISCSI_CICD_BASE_NAME" {
+variable "ISCSI_BASE_NAME" {
   type = string
   default = null
 }

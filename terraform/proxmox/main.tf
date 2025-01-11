@@ -45,7 +45,7 @@ resource "proxmox_virtual_environment_file" "cicd_cloud_config" {
     runcmd:
         - timedatectl set-timezone America/New_York
         - mkdir -p /mnt/eapp/cicd
-        - iscsiadm -m node --targetname iqn.2005-10.org.freenas.ctl:cicd --portal 192.168.1.100:3260 --login
+        - iscsiadm -m node --targetname ${var.ISCSI_BASE_NAME}:cicd --portal 192.168.1.100:3260 --login
         - mv /tmp/id_rsa /home/${var.VIRTUAL_MACHINE_USERNAME}/.ssh/id_rsa
         - mv /tmp/.gitconfig /home/${var.VIRTUAL_MACHINE_USERNAME}/.gitconfig
         - echo "done" > /tmp/cloud-config.done

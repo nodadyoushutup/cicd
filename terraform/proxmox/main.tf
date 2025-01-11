@@ -20,13 +20,17 @@ resource "proxmox_virtual_environment_file" "cloud_config" {
           - ${trimspace(data.local_file.ssh_public_key.content)}
         sudo: ALL=(ALL) NOPASSWD:ALL
     write_files:
-        -   path: /tmp/example_file.txt
+        -   path: /tmp/.gitconfig
             content: |
-                This is an example file created using cloud-init.
-            permissions: '0644'
+                [user]
+                    name = nodadyoushutup
+                    email = admin@nodadyoushutup.com
+            permissions: '0600'
     runcmd:
         - usermod -aG docker ubuntu
         - timedatectl set-timezone America/New_York
+        - cp /tmp/.gitconfig /home/ubuntu/.gitconfig
+        - chown ubuntu:ubuntu /home/ubuntu/.gitconfig
         - echo "done" > /tmp/cloud-config.done
     EOF
 

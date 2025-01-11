@@ -16,23 +16,8 @@ resource "proxmox_virtual_environment_file" "cicd_cloud_config" {
             ssh_authorized_keys:
                 - ${trimspace(data.local_file.ssh_public_key.content)}
             sudo: ALL=(ALL) NOPASSWD:ALL
-    write_files:
-        -   path: /tmp/.gitconfig
-            owner: ${var.VIRTUAL_MACHINE_USERNAME}:${var.VIRTUAL_MACHINE_USERNAME}
-            permissions: '0600'
-            encoding: b64
-            content: ${base64encode(data.local_file.gitconfig.content)}
-        -   path: /tmp/id_rsa
-            owner: ${var.VIRTUAL_MACHINE_USERNAME}:${var.VIRTUAL_MACHINE_USERNAME}
-            permissions: '0600'
-            encoding: b64
-            content: ${base64encode(data.local_file.ssh_private_key.content)}
     runcmd:
         - timedatectl set-timezone America/New_York
-        - mkdir -p /mnt/epool/media
-        - mkdir -p /mnt/eapp/cicd
-        - mv /tmp/id_rsa /home/${var.VIRTUAL_MACHINE_USERNAME}/.ssh/id_rsa
-        - mv /tmp/.gitconfig /home/${var.VIRTUAL_MACHINE_USERNAME}/.gitconfig
         - echo "done" > /tmp/cloud-config.done
     EOF
 

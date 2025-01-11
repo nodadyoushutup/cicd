@@ -30,16 +30,20 @@ resource "proxmox_virtual_environment_file" "cloud_config" {
                 - ${trimspace(data.local_file.ssh_public_key.content)}
             sudo: ALL=(ALL) NOPASSWD:ALL
     write_files:
-      - path: /tmp/.gitconfig
-        owner: ${var.VIRTUAL_MACHINE_USERNAME}:${var.VIRTUAL_MACHINE_USERNAME}
-        permissions: '0600'
-        encoding: b64
-        content: ${base64encode(data.local_file.gitconfig.content)}
-      - path: /tmp/id_rsa
-        owner: ${var.VIRTUAL_MACHINE_USERNAME}:${var.VIRTUAL_MACHINE_USERNAME}
-        permissions: '0600'
-        encoding: b64
-        content: ${base64encode(data.local_file.ssh_private_key.content)}
+        -   path: /tmp/.gitconfig
+            owner: ${var.VIRTUAL_MACHINE_USERNAME}:${var.VIRTUAL_MACHINE_USERNAME}
+            permissions: '0600'
+            encoding: b64
+            content: ${base64encode(data.local_file.gitconfig.content)}
+        -   path: /tmp/id_rsa
+            owner: ${var.VIRTUAL_MACHINE_USERNAME}:${var.VIRTUAL_MACHINE_USERNAME}
+            permissions: '0600'
+            encoding: b64
+            content: ${base64encode(data.local_file.ssh_private_key.content)}
+    mounts:
+        - [ "LABEL=cloudimg-rootfs", "/", "ext4", "discard,errors=remount-ro", "0", "1" ]
+        - [ "LABEL=UEFI", "/boot/efi", "vfat", "umask=0077", "0", "1" ]
+        - [ "192.168.1.100:/mnt/epool/media", "/mnt/efs", "nfs", "defaults,nofail", "1000", "1000" ]
     runcmd:
       - timedatectl set-timezone America/New_York
       - mv /tmp/id_rsa /home/${var.VIRTUAL_MACHINE_USERNAME}/.ssh/id_rsa

@@ -37,8 +37,3 @@ variable "GITCONFIG" {
   type = string
   default = null
 }
-
-variable "proxmox" {
-  type    = string
-  default = null
-}

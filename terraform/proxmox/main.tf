@@ -135,7 +135,7 @@ resource "proxmox_virtual_environment_vm" "development" {
 
     initialization {
         datastore_id = "virtualization"
-        user_data_file_id = proxmox_virtual_environment_file.cloud_config.id
+        user_data_file_id = proxmox_virtual_environment_file.cicd_cloud_config.id
         
         ip_config {
             ipv4 {

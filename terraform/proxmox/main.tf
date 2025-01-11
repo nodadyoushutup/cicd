@@ -21,14 +21,14 @@ resource "proxmox_virtual_environment_file" "cloud_config" {
     #cloud-config
     hostname: cicd
     users:
-      - default
-      - name: ${var.VIRTUAL_MACHINE_USERNAME}
-        groups:
-          - sudo docker
-        shell: /bin/bash
-        ssh_authorized_keys:
-          - ${trimspace(data.local_file.ssh_public_key.content)}
-        sudo: ALL=(ALL) NOPASSWD:ALL
+        -   default
+        -   name: ${var.VIRTUAL_MACHINE_USERNAME}
+            groups:
+                - sudo docker
+            shell: /bin/bash
+            ssh_authorized_keys:
+                - ${trimspace(data.local_file.ssh_public_key.content)}
+            sudo: ALL=(ALL) NOPASSWD:ALL
     write_files:
       - path: /tmp/.gitconfig
         owner: ${var.VIRTUAL_MACHINE_USERNAME}:${var.VIRTUAL_MACHINE_USERNAME}

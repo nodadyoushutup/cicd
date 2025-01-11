@@ -1,7 +1,5 @@
-data "proxmox_virtual_environment_user" "root" {
-  user_id = "root@pve"
-}
+data "proxmox_virtual_environment_pools" "available_pools" {}
 
 output "root" {
-  value = var.PROXMOX_VE_ENDPOINT
+  value = data.proxmox_virtual_environment_pools
 }

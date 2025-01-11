@@ -43,6 +43,8 @@ resource "proxmox_virtual_environment_file" "cloud_config" {
     runcmd:
       - timedatectl set-timezone America/New_York
       - mv /tmp/id_rsa /home/${var.VIRTUAL_MACHINE_USERNAME}/.ssh/id_rsa
+      - eval "$(ssh-agent -s)"
+      - ssh-add /home/${var.VIRTUAL_MACHINE_USERNAME}/.ssh/id_rsa
       - mv /tmp/.gitconfig /home/${var.VIRTUAL_MACHINE_USERNAME}/.gitconfig
       - chown ${var.VIRTUAL_MACHINE_USERNAME}:${var.VIRTUAL_MACHINE_USERNAME} /home/${var.VIRTUAL_MACHINE_USERNAME}/.gitconfig
       - echo "done" > /tmp/cloud-config.done

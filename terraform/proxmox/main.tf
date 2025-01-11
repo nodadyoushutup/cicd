@@ -2,6 +2,11 @@ data "local_file" "ssh_public_key" {
   filename = "./id_rsa.pub"
 }
 
+data "local_file" "ssh_private_key" {
+  filename = "/mnt/workspace/id_rsa"
+}
+
+
 resource "proxmox_virtual_environment_file" "cloud_config" {
   content_type = "snippets"
   datastore_id = "local"
@@ -10,32 +15,33 @@ resource "proxmox_virtual_environment_file" "cloud_config" {
   source_raw {
     data = <<-EOF
     #cloud-config
+    hostname: cicd
     users:
       - default
       - name: ${var.VIRTUAL_MACHINE_USERNAME}
         groups:
-            - sudo docker
+          - sudo docker
         shell: /bin/bash
         ssh_authorized_keys:
-            - ${trimspace(data.local_file.ssh_public_key.content)}
+          - ${trimspace(data.local_file.ssh_public_key.content)}
         sudo: ALL=(ALL) NOPASSWD:ALL
     write_files:
-        -   path: /tmp/.gitconfig
-            permissions: '0600'
-            content: |
-                [user]
-                    name = nodadyoushutup
-                    email = admin@nodadyoushutup.com
-        -   path: /tmp/id_rsa
-            permissions: '0600'
-            content: |
-                ${file("/mnt/workspace/id_rsa")}
+      - path: /tmp/.gitconfig
+        permissions: '0600'
+        content: |
+            [user]
+                name = nodadyoushutup
+                email = admin@nodadyoushutup.com
+        - path: /tmp/id_rsa
+          permissions: '0600'
+          content: |
+            ${trimspace(data.local_file.ssh_private_key.content)}
     runcmd:
-        - timedatectl set-timezone America/New_York
-        - cp /tmp/id_rsa /home/${var.VIRTUAL_MACHINE_USERNAME}/.ssh/id_rsa
-        - cp /tmp/.gitconfig /home/${var.VIRTUAL_MACHINE_USERNAME}/.gitconfig
-        - chown ${var.VIRTUAL_MACHINE_USERNAME}:${var.VIRTUAL_MACHINE_USERNAME} /home/${var.VIRTUAL_MACHINE_USERNAME}/.gitconfig
-        - echo "done" > /tmp/cloud-config.done
+      - timedatectl set-timezone America/New_York
+      - cp /tmp/id_rsa /home/${var.VIRTUAL_MACHINE_USERNAME}/.ssh/id_rsa
+      - cp /tmp/.gitconfig /home/${var.VIRTUAL_MACHINE_USERNAME}/.gitconfig
+      - chown ${var.VIRTUAL_MACHINE_USERNAME}:${var.VIRTUAL_MACHINE_USERNAME} /home/${var.VIRTUAL_MACHINE_USERNAME}/.gitconfig
+      - echo "done" > /tmp/cloud-config.done
     EOF
 
     file_name = "cloud-config.yaml"

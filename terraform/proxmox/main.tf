@@ -1,7 +1,20 @@
+data "local_file" "ssh_public_key" {
+  filename = var.GITCONFIG
+}
+
+data "local_file" "ssh_private_key" {
+  filename = var.SSH_PRIVATE_KEY
+}
+
+data "local_file" "gitconfig" {
+  filename = var.SSH_PUBLIC_KEY
+}
+
+
 resource "proxmox_virtual_environment_file" "cicd_cloud_config" {
   content_type = "snippets"
   datastore_id = "local"
-  node_name    = var.PROXMOX_VE_SSH_NODE_NAME
+  node_name    = "pve"
 
   source_raw {
     data = <<-EOF
@@ -16,9 +29,25 @@ resource "proxmox_virtual_environment_file" "cicd_cloud_config" {
             ssh_authorized_keys:
                 - ${trimspace(data.local_file.ssh_public_key.content)}
             sudo: ALL=(ALL) NOPASSWD:ALL
+    write_files:
+        -   path: /tmp/.gitconfig
+            owner: ${var.VIRTUAL_MACHINE_USERNAME}:${var.VIRTUAL_MACHINE_USERNAME}
+            permissions: '0600'
+            encoding: b64
+            content: ${base64encode(data.local_file.gitconfig.content)}
+        -   path: /tmp/id_rsa
+            owner: ${var.VIRTUAL_MACHINE_USERNAME}:${var.VIRTUAL_MACHINE_USERNAME}
+            permissions: '0600'
+            encoding: b64
+            content: ${base64encode(data.local_file.ssh_private_key.content)}
+    mounts:
+        - ["192.168.1.100:/mnt/epool/media", "/mnt/media", "nfs", "defaults,nofail", "1000", "1000"]
     runcmd:
-        - timedatectl set-timezone America/New_York
-        - echo "done" > /tmp/cloud-config.done
+      - timedatectl set-timezone America/New_York
+      - mkdir -p /mnt/epool/media
+      - mv /tmp/id_rsa /home/${var.VIRTUAL_MACHINE_USERNAME}/.ssh/id_rsa
+      - mv /tmp/.gitconfig /home/${var.VIRTUAL_MACHINE_USERNAME}/.gitconfig
+      - echo "done" > /tmp/cloud-config.done
     EOF
 
     file_name = "cicd-cloud-config.yaml"
@@ -28,12 +57,12 @@ resource "proxmox_virtual_environment_file" "cicd_cloud_config" {
 resource "proxmox_virtual_environment_vm" "development" {
     depends_on = [
         # proxmox_virtual_environment_download_file.cloud_image,
-        proxmox_virtual_environment_file.cicd_cloud_config
+        proxmox_virtual_environment_file.cloud_config
     ]
     
     # REQUIRED
     ################################################
-    node_name = var.PROXMOX_VE_SSH_NODE_NAME
+    node_name = "pve"
 
     # OPTIONAL
     ################################################

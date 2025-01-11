@@ -129,7 +129,9 @@ resource "proxmox_virtual_environment_vm" "development" {
 
     pool_id = "development"
 
-    startup {
+    started = true
+
+    up {
         order = 1
         up_delay = 0
         down_delay = 0

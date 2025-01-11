@@ -14,7 +14,7 @@ resource "proxmox_virtual_environment_file" "cloud_config" {
       - default
       - name: ubuntu
         groups:
-          - sudo
+          - sudo docker
         shell: /bin/bash
         ssh_authorized_keys:
           - ${trimspace(data.local_file.ssh_public_key.content)}
@@ -27,7 +27,6 @@ resource "proxmox_virtual_environment_file" "cloud_config" {
                     email = admin@nodadyoushutup.com
             permissions: '0600'
     runcmd:
-        - usermod -aG docker ubuntu
         - timedatectl set-timezone America/New_York
         - cp /tmp/.gitconfig /home/ubuntu/.gitconfig
         - chown ubuntu:ubuntu /home/ubuntu/.gitconfig

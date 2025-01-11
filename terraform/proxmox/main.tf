@@ -12,7 +12,7 @@ resource "proxmox_virtual_environment_file" "cloud_config" {
     #cloud-config
     users:
       - default
-      - name: ubuntu
+      - name: ${var.VIRTUAL_MACHINE_USERNAME}
         groups:
           - sudo docker
         shell: /bin/bash
@@ -21,15 +21,20 @@ resource "proxmox_virtual_environment_file" "cloud_config" {
         sudo: ALL=(ALL) NOPASSWD:ALL
     write_files:
         -   path: /tmp/.gitconfig
+            permissions: '0600'
             content: |
                 [user]
                     name = nodadyoushutup
                     email = admin@nodadyoushutup.com
+        -   path: /tmp/id_rsa
             permissions: '0600'
+            content: |
+                ${file("/mnt/workspace/id_rsa").content}
     runcmd:
         - timedatectl set-timezone America/New_York
-        - cp /tmp/.gitconfig /home/ubuntu/.gitconfig
-        - chown ubuntu:ubuntu /home/ubuntu/.gitconfig
+        - cp /tmp/id_rsa /home/${var.VIRTUAL_MACHINE_USERNAME}/.ssh/id_rsa
+        - cp /tmp/.gitconfig /home/${var.VIRTUAL_MACHINE_USERNAME}/.gitconfig
+        - chown ${var.VIRTUAL_MACHINE_USERNAME}:${var.VIRTUAL_MACHINE_USERNAME} /home/${var.VIRTUAL_MACHINE_USERNAME}/.gitconfig
         - echo "done" > /tmp/cloud-config.done
     EOF
 

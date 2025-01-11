@@ -39,11 +39,6 @@ variable "GITCONFIG" {
 }
 
 variable "proxmox" {
-  type = object({
-    username = string
-    password = string
-    endpoint = string
-    ssh_node_address = string
-  })
+  type    = string
   default = null
 }

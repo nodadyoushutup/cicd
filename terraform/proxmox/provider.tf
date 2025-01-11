@@ -5,8 +5,3 @@ terraform {
     }
   }
 }
-
-variable "proxmox" {
-  type    = string
-  default = null
-}

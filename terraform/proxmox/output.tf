@@ -3,5 +3,5 @@ data "proxmox_virtual_environment_user" "root" {
 }
 
 output "root" {
-  value = data.proxmox_virtual_environment_user.user_id
+  value = data.proxmox_virtual_environment_user.root.user_id
 }

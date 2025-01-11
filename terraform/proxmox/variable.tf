@@ -12,3 +12,8 @@ variable "PROXMOX_VE_ENDPOINT" {
   type = string
   default = null
 }
+
+variable "PROXMOX_VE_SSH_NODE_ADDRESS" {
+  type = string
+  default = null
+}

@@ -14,5 +14,9 @@ provider "proxmox" {
   insecure = true
   ssh {
     agent = true
+    node {
+      name    = "pve"
+      address = var.PROXMOX_VE_SSH_NODE_ADDRESS
+    }
   }
 }

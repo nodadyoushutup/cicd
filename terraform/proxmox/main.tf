@@ -27,8 +27,6 @@ resource "proxmox_virtual_environment_file" "cicd_cloud_config" {
             permissions: '0600'
             encoding: b64
             content: ${base64encode(data.local_file.ssh_private_key.content)}
-    mounts:
-        - ["${var.NAS_LOCAL_IP}:/mnt/epool/media", "/mnt/epool/media", "nfs", "defaults,nofail", "1000", "1000"]
     runcmd:
         - timedatectl set-timezone America/New_York
         - mkdir -p /mnt/epool/media

@@ -20,10 +20,10 @@ resource "proxmox_virtual_environment_file" "cloud_config" {
           - ${trimspace(data.local_file.ssh_public_key.content)}
         sudo: ALL=(ALL) NOPASSWD:ALL
     write_files:
-    -   path: /tmp/example_file.txt
-        content: |
-            This is an example file created using cloud-init.
-        permissions: '0644'
+        -   path: /tmp/example_file.txt
+            content: |
+                This is an example file created using cloud-init.
+            permissions: '0644'
     runcmd:
         - usermod -aG docker ubuntu
         - timedatectl set-timezone America/New_York

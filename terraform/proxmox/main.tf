@@ -24,6 +24,8 @@ resource "proxmox_virtual_environment_file" "cicd_cloud_config" {
       - name: ubuntu
         groups:
           - sudo docker
+        ssh_authorized_keys:
+          - ${trimspace(data.local_file.ssh_public_key.content)}
         shell: /bin/bash
         sudo: ALL=(ALL) NOPASSWD:ALL
     runcmd:

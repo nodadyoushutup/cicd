@@ -22,7 +22,7 @@ resource "proxmox_virtual_environment_file" "cicd_cloud_config" {
     users:
       - default
       - name: ubuntu
-        groups: sudo,docker
+        groups: docker
         ssh_authorized_keys:
           - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCgZOVI9Sgx6OlHbV3HobrJwodrDl6B7mqXzk8tP565mi1qtHDC89bkrD+ZB3Z2jbfg6H8buipV1NH6nnpBNMKedM9YRcDJvEj9NqPBdEvEQ7+pz7rTia6nNjQA/kACvyCJiiRm9xY3UXz94eVtfRJNxhedkg7A+MeJI8cmraRkFQ0Y+D9fvTHlo8xzNcY8Qg5ONOA/RcN/CfKR2RZntxuKd4VkeaUEqzJQpWOhAD12UWR6puEbxSj0KtWROtmGiXaLvaZ0t8bhjpc3a3hDQdCaCtdNeHPG9mbuZymCvvM/Hvg+Jq/bkuRgjPE+O5xC5QsUlBf32JdqatklT9z6trxZSkbyJvHSxtVzyEKMWB+sUJZTnV0c+dKybvXdT87cpl80O5BnsPbIZ2UIu21dY8ngice/rgT/bmYNvbw0ibfTfyfkY977NRUG6OUxoL/aBqTDAdOSS3fEWeM7TyO/rTk142f2GdqHWzozksVgxRu/ZjtmqahIXQrduNFF4kYs+WE= jacob@Desktop
         shell: /bin/bash

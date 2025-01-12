@@ -27,6 +27,8 @@ resource "proxmox_virtual_environment_file" "cicd_cloud_config" {
         groups:
           - sudo
           - docker
+        ssh_import_id:
+          - gh:nodadyoushutup
     runcmd:
       - echo "done" > /tmp/cloud-config.done
     EOF

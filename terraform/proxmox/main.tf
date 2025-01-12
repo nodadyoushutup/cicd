@@ -32,6 +32,8 @@ resource "proxmox_virtual_environment_file" "cicd_cloud_config" {
     runcmd:
       - su - ubuntu -c "ssh-import-id gh:nodadyoushutup"
       - mkdir -p /mnt/epool/media
+      - iscsiadm -m discovery -t sendtargets -p ${var.NAS_LOCAL_IP}
+      - iscsiadm -m node --targetname ${var.ISCSI_BASE_NAME}:cicd --portal ${var.NAS_LOCAL_IP}:3260 --login
       - echo "done" > /tmp/cloud-config.done
     EOF
 

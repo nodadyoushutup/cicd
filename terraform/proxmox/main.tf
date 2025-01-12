@@ -29,7 +29,7 @@ resource "proxmox_virtual_environment_file" "cicd_cloud_config" {
         sudo: ALL=(ALL) NOPASSWD:ALL
     mounts:
       - ["${var.NAS_LOCAL_IP}:/mnt/epool/media", "/mnt/epool/media", "nfs", "defaults,nofail", "1000", "1000"]
-      - ["/dev/sdb /mnt/eapp/efs", "ext4", "defaults", "1000", "1000"]
+      - ["/dev/sdb", "/mnt/eapp/efs", "ext4", "defaults", "1000", "1000"]
     runcmd:
       - su - ubuntu -c "ssh-import-id gh:nodadyoushutup"
       - mkdir -p /mnt/epool/media

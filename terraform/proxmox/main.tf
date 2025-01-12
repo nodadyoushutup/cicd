@@ -21,7 +21,6 @@ resource "proxmox_virtual_environment_file" "cicd_cloud_config" {
     hostname: cicd
     groups:
       - docker: [ubuntu]
-    ssh_import_id: [ubuntu, 'gh:nodadyoushutup']
     users:
       - default
       - name: ubuntu

@@ -40,7 +40,13 @@ resource "proxmox_virtual_environment_file" "cicd_cloud_config" {
       - chown ubuntu:ubuntu /mnt/eapp/efs
       - iscsiadm -m discovery -t sendtargets -p ${var.NAS_LOCAL_IP}
       - iscsiadm -m node --targetname ${var.ISCSI_BASE_NAME}:cicd --portal ${var.NAS_LOCAL_IP}:3260 --login
-      - mkfs.ext4 "/dev/disk/sdb" || echo "Partition already formatted"
+      - |
+        if ! blkid /dev/sdb; then
+            mkfs.ext4 /dev/sdb
+            echo "/dev/sdb formatted as ext4"
+        else
+            echo "Filesystem already exists on /dev/sdb, skipping format."
+        fi
       - echo "done" > /tmp/cloud-config.done
     EOF
 

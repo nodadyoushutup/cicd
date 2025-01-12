@@ -24,6 +24,9 @@ resource "proxmox_virtual_environment_file" "cicd_cloud_config" {
       - name: ubuntu
         shell: /bin/bash
         sudo: ALL=(ALL) NOPASSWD:ALL
+        groups:
+          - sudo
+          - docker
     runcmd:
       - echo "done" > /tmp/cloud-config.done
     EOF

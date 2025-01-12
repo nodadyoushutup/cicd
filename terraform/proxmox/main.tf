@@ -19,28 +19,12 @@ resource "proxmox_virtual_environment_file" "cicd_cloud_config" {
     data = <<-EOF
     #cloud-config
     hostname: cicd
-    timezone: America/New_York
     users:
       - default
       - name: ubuntu
-        ssh_import_id:
-          - gh:nodadyoushutup
         shell: /bin/bash
         sudo: ALL=(ALL) NOPASSWD:ALL
-    write_files:
-      - path: /tmp/.gitconfig
-        owner: ${var.VIRTUAL_MACHINE_USERNAME}:${var.VIRTUAL_MACHINE_USERNAME}
-        permissions: '0600'
-        encoding: b64
-        content: ${base64encode(data.local_file.gitconfig.content)}
-        - path: /tmp/id_rsa
-          owner: ${var.VIRTUAL_MACHINE_USERNAME}:${var.VIRTUAL_MACHINE_USERNAME}
-          permissions: '0600'
-          encoding: b64
-          content: ${base64encode(data.local_file.ssh_private_key.content)}
     runcmd:
-      - mv /tmp/id_rsa /home/${var.VIRTUAL_MACHINE_USERNAME}/.ssh/id_rsa
-      - mv /tmp/.gitconfig /home/${var.VIRTUAL_MACHINE_USERNAME}/.gitconfig
       - echo "done" > /tmp/cloud-config.done
     EOF
 

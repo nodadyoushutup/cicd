@@ -28,12 +28,17 @@ resource "proxmox_virtual_environment_file" "cicd_cloud_config" {
         shell: /bin/bash
         sudo: ALL=(ALL) NOPASSWD:ALL
     mounts:
-      - ["${var.NAS_LOCAL_IP}:/mnt/epool/media", "/mnt/epool/media", "nfs", "defaults,nofail,uid=1000,gid=1000", "0", "2"]
-      - ["/dev/sdb", "/mnt/eapp/efs", "ext4", "defaults,nofail,uid=1000,gid=1000", "0", "2"]
+      - ["${var.NAS_LOCAL_IP}:/mnt/epool/media", "/mnt/epool/media", "nfs", "defaults,nofail", "0", "2"]
+      - ["/dev/sdb", "/mnt/eapp/efs", "ext4", "defaults,nofail", "0", "2"]
     runcmd:
       - su - ubuntu -c "ssh-import-id gh:nodadyoushutup"
       - mkdir -p /mnt/epool/media
       - mkdir -p /mnt/eapp/efs
+      - chown ubuntu:ubuntu /mnt
+      - chown ubuntu:ubuntu /mnt/epool
+      - chown ubuntu:ubuntu /mnt/eapp/efs
+      - chown ubuntu:ubuntu /mnt/epool/media
+      - chown ubuntu:ubuntu /mnt/eapp/efs
       - iscsiadm -m discovery -t sendtargets -p ${var.NAS_LOCAL_IP}
       - iscsiadm -m node --targetname ${var.ISCSI_BASE_NAME}:cicd --portal ${var.NAS_LOCAL_IP}:3260 --login
       - mkfs.ext4 "/dev/disk/sdb" || echo "Partition already formatted"

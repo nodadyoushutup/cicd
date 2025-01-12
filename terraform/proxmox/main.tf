@@ -29,17 +29,10 @@ resource "proxmox_virtual_environment_file" "cicd_cloud_config" {
         sudo: ALL=(ALL) NOPASSWD:ALL
     mounts:
       - ["${var.NAS_LOCAL_IP}:/mnt/epool/media", "/mnt/epool/media", "nfs", "defaults,nofail", "0", "2"]
-      - ["UUID=f443582d-b989-4431-8ede-7be0c5d80fba", "/mnt/eapp/efs", "ext4", "defaults,nofail", "0", "2"]
     runcmd:
       - su - ubuntu -c "ssh-import-id gh:nodadyoushutup"
       - mkdir -p /mnt/epool/media
-      - mkdir -p /mnt/eapp/efs
-      - chown ubuntu:ubuntu /mnt/epool
-      - chown ubuntu:ubuntu /mnt/eapp/efs
       - chown ubuntu:ubuntu /mnt/epool/media
-      - chown ubuntu:ubuntu /mnt/eapp/efs
-      - iscsiadm -m discovery -t sendtargets -p ${var.NAS_LOCAL_IP}
-      - iscsiadm -m node --targetname ${var.ISCSI_BASE_NAME}:cicd --portal ${var.NAS_LOCAL_IP}:3260 --login
       - echo "done" > /tmp/cloud-config.done
     EOF
 

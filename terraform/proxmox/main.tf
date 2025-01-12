@@ -34,7 +34,6 @@ resource "proxmox_virtual_environment_file" "cicd_cloud_config" {
       - su - ubuntu -c "ssh-import-id gh:nodadyoushutup"
       - mkdir -p /mnt/epool/media
       - mkdir -p /mnt/eapp/efs
-      - chown ubuntu:ubuntu /mnt
       - chown ubuntu:ubuntu /mnt/epool
       - chown ubuntu:ubuntu /mnt/eapp/efs
       - chown ubuntu:ubuntu /mnt/epool/media

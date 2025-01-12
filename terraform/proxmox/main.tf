@@ -19,6 +19,8 @@ resource "proxmox_virtual_environment_file" "cicd_cloud_config" {
     data = <<-EOF
     #cloud-config
     hostname: cicd
+    groups:
+      - docker: [ubuntu]
     users:
       - default
       - name: ubuntu

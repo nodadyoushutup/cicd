@@ -201,7 +201,7 @@ resource "proxmox_virtual_environment_vm" "cicd" {
     vm_id = 1101
 }
 
-data "docker_image" "specific" {
+data "docker_image" "nginx" {
   depends_on = [ proxmox_virtual_environment_vm.cicd ]
   name = "nginx:1.17.6"
 }

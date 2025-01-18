@@ -18,7 +18,7 @@ resource "docker_container" "jenkins" {
   }
 
   volumes {
-    volume_name = docker_volume.name
+    volume_name = docker_volume.jenkins.name
     container_path = "/var/jenkins_home"
   }
 }

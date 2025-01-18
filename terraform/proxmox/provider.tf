@@ -3,10 +3,10 @@ terraform {
     proxmox = {
       source = "bpg/proxmox"
     }
-    # docker = {
-    #   source  = "kreuzwerker/docker"
-    #   version = "3.0.2"
-    # }
+    docker = {
+      source  = "kreuzwerker/docker"
+      version = "3.0.2"
+    }
   }
 }
 
@@ -25,7 +25,7 @@ provider "proxmox" {
   }
 }
 
-# provider "docker" {
-#   host     = "ssh://${var.VIRTUAL_MACHINE_USERNAME}@${var.PROXMOX_VE_SSH_NODE_ADDRESS}:1022"
-#   ssh_opts = ["-o", "StrictHostKeyChecking=no", "-o", "UserKnownHostsFile=/dev/null", "-o", "IdentityFile=/mnt/workspace/id_rsa"]
-# }
+provider "docker" {
+  host     = "ssh://${var.VIRTUAL_MACHINE_USERNAME}@${var.PROXMOX_VE_SSH_NODE_ADDRESS}:1022"
+  ssh_opts = ["-o", "StrictHostKeyChecking=no", "-o", "UserKnownHostsFile=/dev/null", "-o", "IdentityFile=/mnt/workspace/id_rsa"]
+}

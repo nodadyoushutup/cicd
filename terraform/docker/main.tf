@@ -1,3 +1,3 @@
 resource "docker_image" "nginx" {
-  name = "nginx:latest"
+  name = "ghcr.io/nodadyoushutup/spacelift-runner-terraform:0.1.3"
 }

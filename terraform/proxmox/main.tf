@@ -53,7 +53,7 @@ resource "proxmox_virtual_environment_file" "cicd_cloud_config" {
   }
 }
 
-resource "proxmox_virtual_environment_vm" "development" {
+resource "proxmox_virtual_environment_vm" "cicd" {
     depends_on = [
         # proxmox_virtual_environment_download_file.cloud_image,
         proxmox_virtual_environment_file.cicd_cloud_config
@@ -178,7 +178,7 @@ resource "proxmox_virtual_environment_vm" "development" {
         type = "l26"
     }
 
-    pool_id = "development"
+    pool_id = "cicd"
 
     started = true
 
@@ -188,7 +188,7 @@ resource "proxmox_virtual_environment_vm" "development" {
         down_delay = 0
     }
 
-    tags = ["terraform", "cloud-image", "development"]
+    tags = ["terraform", "cloud-image", "cicd"]
 
     stop_on_destroy = true
 
@@ -201,3 +201,7 @@ resource "proxmox_virtual_environment_vm" "development" {
     vm_id = 1101
 }
 
+data "docker_image" "specific" {
+  depends_on = [ proxmox_virtual_environment_vm.cicd ]
+  name = "nginx:1.17.6"
+}

@@ -7,7 +7,7 @@ data "local_file" "ssh_private_key" {
 }
 
 data "local_file" "gitconfig" {
-  filename = var.SSH_PUBLIC_KEY
+  filename = var.GITCONFIG
 }
 
 resource "proxmox_virtual_environment_file" "cicd_cloud_config" {

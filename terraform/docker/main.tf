@@ -11,8 +11,14 @@ resource "docker_container" "jenkins" {
   depends_on = [docker_volume.jenkins]
   name  = "jenkins"
   image = docker_image.jenkins.image_id
+  
   ports {
     internal = "8080"
     external = "8080"
+  }
+
+  volumes {
+    volume_name = docker_volume.name
+    container_path = "/var/jenkins_home"
   }
 }

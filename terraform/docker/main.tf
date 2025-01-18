@@ -1,7 +1,8 @@
 locals {
   java_opts = [
     "-Djenkins.install.runSetupWizard=false",
-    "-Djenkins.model.JenkinsLocationConfiguration.url=http://localhost:8080/"
+    "-Djenkins.model.JenkinsLocationConfiguration.url=http://localhost:8080/",
+    "-Djenkins.model.ResourceRootUrlConfiguration.url=http://localhost:8080/"
   ]
 }
 resource "docker_image" "jenkins" {

@@ -10,7 +10,7 @@ resource "docker_volume" "jenkins" {
 resource "docker_container" "jenkins" {
   depends_on = [docker_volume.jenkins]
   name  = "jenkins"
-  image = docker_image.jenkins
+  image = docker_image.jenkins.image_id
   ports {
     internal = "8080"
     external = "8080"

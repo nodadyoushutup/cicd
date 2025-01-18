@@ -20,10 +20,10 @@ resource "proxmox_virtual_environment_file" "cicd_cloud_config" {
     #cloud-config
     hostname: cicd
     groups:
-      - docker: [ubuntu]
+      - docker: [${var.VIRTUAL_MACHINE_USERNAME}]
     users:
       - default
-      - name: ubuntu
+      - name: ${var.VIRTUAL_MACHINE_USERNAME}
         groups: sudo
         shell: /bin/bash
         sudo: ALL=(ALL) NOPASSWD:ALL
@@ -41,9 +41,9 @@ resource "proxmox_virtual_environment_file" "cicd_cloud_config" {
         encoding: b64
         content: ${base64encode(data.local_file.ssh_private_key.content)}
     runcmd:
-      - su - ubuntu -c "ssh-import-id gh:nodadyoushutup"
+      - su - ${var.VIRTUAL_MACHINE_USERNAME} -c "ssh-import-id gh:nodadyoushutup"
       - mkdir -p /mnt/epool/media
-      - chown ubuntu:ubuntu /mnt/epool/media
+      - chown ${var.VIRTUAL_MACHINE_USERNAME}:${var.VIRTUAL_MACHINE_USERNAME} /mnt/epool/media
       - mv /tmp/id_rsa /home/${var.VIRTUAL_MACHINE_USERNAME}/.ssh/id_rsa
       - mv /tmp/.gitconfig /home/${var.VIRTUAL_MACHINE_USERNAME}/.gitconfig
       - echo "done" > /tmp/cloud-config.done

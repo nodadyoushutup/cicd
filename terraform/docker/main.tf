@@ -1,3 +1,9 @@
+locals {
+  java_opts = [
+    "-Djenkins.install.runSetupWizard=false",
+    "-Djenkins.model.JenkinsLocationConfiguration.url=http://localhost:8080/"
+  ]
+}
 resource "docker_image" "jenkins" {
   name = "ghcr.io/nodadyoushutup/jenkins:2.493"
 }
@@ -11,6 +17,7 @@ resource "docker_container" "jenkins" {
   depends_on = [docker_volume.jenkins]
   name  = "jenkins"
   image = docker_image.jenkins.image_id
+  env = ["JAVA_OPTS=${join(" ", local.java_opts)}"]
   
   ports {
     internal = "8080"

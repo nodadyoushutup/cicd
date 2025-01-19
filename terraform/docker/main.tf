@@ -4,6 +4,29 @@ locals {
   ]
 }
 
+data "template_file" "example" {
+  template = <<EOF
+This is a dynamic file content:
+Key = "value"
+EOF
+}
+
+resource "null_resource" "create_remote_file" {
+  connection {
+    type        = "ssh"
+    user        = var.VIRTUAL_MACHINE_USERNAME
+    private_key = file(var.SSH_PRIVATE_KEY)
+    host        = var.PROXMOX_VE_SSH_NODE_ADDRESS
+    port        = 10122
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "echo '${data.template_file.example.rendered}' > /tmp/example.txt"
+    ]
+  }
+}
+
 resource "docker_image" "jenkins" {
   name = "ghcr.io/nodadyoushutup/jenkins:2.493"
 }

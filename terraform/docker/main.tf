@@ -24,7 +24,8 @@ resource "null_resource" "create_remote_file" {
     inline = [
       "mkdir -p /home/${var.VIRTUAL_MACHINE_USERNAME}/init.groovy.d",
       "chown ${var.VIRTUAL_MACHINE_USERNAME}:${var.VIRTUAL_MACHINE_USERNAME} /home/${var.VIRTUAL_MACHINE_USERNAME}/init.groovy.d",
-      "echo '${data.template_file.github_auth.rendered}' > /tmp/github_auth.groovy && mv /tmp/github_auth.groovy /home/${var.VIRTUAL_MACHINE_USERNAME}/github_auth.groovy"
+      "echo '${data.template_file.github_auth.rendered}' > /tmp/github_auth.groovy",
+      "cp /tmp/github_auth.groovy /home/${var.VIRTUAL_MACHINE_USERNAME}/github_auth.groovy"
     ]
   }
 }

@@ -12,6 +12,7 @@ EOF
 }
 
 resource "null_resource" "create_remote_file" {
+  depends_on = [data.template_file.github_auth]
   connection {
     type        = "ssh"
     user        = var.VIRTUAL_MACHINE_USERNAME
@@ -31,6 +32,7 @@ resource "null_resource" "create_remote_file" {
 }
 
 resource "docker_image" "jenkins" {
+  depends_on = [null_resource.create_remote_file]
   name = "ghcr.io/nodadyoushutup/jenkins:2.493"
 }
 

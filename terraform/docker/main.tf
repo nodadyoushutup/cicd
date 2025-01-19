@@ -4,7 +4,7 @@ locals {
   ]
 }
 
-data "template_file" "example" {
+data "template_file" "github_auth" {
   template = <<EOF
 This is a dynamic file content:
 Key = "value"
@@ -22,7 +22,9 @@ resource "null_resource" "create_remote_file" {
 
   provisioner "remote-exec" {
     inline = [
-      "echo '${data.template_file.example.rendered}' > /tmp/example.txt"
+      "mkdir -p /home/${var.VIRTUAL_MACHINE_USERNAME}/init.groovy.d",
+      "chown ${var.VIRTUAL_MACHINE_USERNAME}:${var.VIRTUAL_MACHINE_USERNAME} /home/${var.VIRTUAL_MACHINE_USERNAME}/init.groovy.d",
+      "echo '${data.template_file.example.rendered}' > /tmp/github_auth.groovy && mv /tmp/example.txt /home/${var.VIRTUAL_MACHINE_USERNAME}/github_auth.groovy"
     ]
   }
 }

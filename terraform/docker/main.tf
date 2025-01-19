@@ -36,16 +36,16 @@ resource "null_resource" "create_remote_file" {
 
   provisioner "remote-exec" {
     inline = [
-      "mkdir -p /home/ubuntu/init.groovy.d",
-      "chown ubuntu:ubuntu /home/ubuntu/init.groovy.d",
+      "mkdir -p /home/${var.VIRTUAL_MACHINE_USERNAME}/init.groovy.d",
+      "chown ${var.VIRTUAL_MACHINE_USERNAME}:${var.VIRTUAL_MACHINE_USERNAME} /home/${var.VIRTUAL_MACHINE_USERNAME}/init.groovy.d",
       "cat <<EOF > /tmp/auth.groovy",
       "${local.template.auth_groovy}",
       "EOF",
       "cat <<EOF > /tmp/system.groovy",
       "${local.template.system_groovy}",
       "EOF",
-      "cp /tmp/auth.groovy /home/ubuntu/auth.groovy",
-      "cp /tmp/system.groovy /home/ubuntu/system.groovy"
+      "cp /tmp/auth.groovy /home/${var.VIRTUAL_MACHINE_USERNAME}/auth.groovy",
+      "cp /tmp/system.groovy /home/${var.VIRTUAL_MACHINE_USERNAME}/system.groovy"
     ]
   }
 }

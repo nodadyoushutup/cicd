@@ -33,7 +33,7 @@ if (!githubRealm.equals(jenkins.getSecurityRealm())) {
 
 //permissions are ordered similar to web UI
 //Admin User Names
-String adminUserNames = '"${GITHUB_USERNAME}"'
+String adminUserNames = '${GITHUB_USERNAME}'
 //Participant in Organization
 String organizationNames = ''
 //Use Github repository permissions

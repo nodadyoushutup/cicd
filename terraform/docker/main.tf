@@ -13,7 +13,6 @@ locals {
 }
 
 resource "null_resource" "create_remote_file" {
-  depends_on = [data.template_file.github_auth]
   connection {
     type        = "ssh"
     user        = var.VIRTUAL_MACHINE_USERNAME

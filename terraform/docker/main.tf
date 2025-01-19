@@ -37,7 +37,7 @@ resource "docker_container" "jenkins" {
   }
 
   healthcheck {
-    test = "http://localhost:8080/whoAmI/api/json?tree=authenticated"
+    test = ["http://localhost:8080/whoAmI/api/json?tree=authenticated"]
   }
 
 }

@@ -3,7 +3,7 @@ locals {
     "-Djenkins.install.runSetupWizard=false"
   ]
   github_auth = templatefile(
-    "${path.module}/github_auth.tpl", 
+    "${path.module}/terraform/docker/github_auth.tpl", 
     {
       GITHUB_USERNAME = var.GITHUB_USERNAME, 
       GITHUB_JENKINS_CLIENT_ID = var.GITHUB_JENKINS_CLIENT_ID, 

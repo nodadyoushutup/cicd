@@ -25,8 +25,12 @@ resource "null_resource" "create_remote_file" {
     inline = [
       "mkdir -p /home/ubuntu/init.groovy.d",
       "chown ubuntu:ubuntu /home/ubuntu/init.groovy.d",
-      "echo \"${data.template_file.github_auth.rendered}\" > /tmp/github_auth.groovy",
-      # "cp /tmp/github_auth.groovy /home/ubuntu/github_auth.groovy"
+      "echo \"${templatefile("${path.module}/github_auth.tpl", { 
+        GITHUB_USERNAME             = var.GITHUB_USERNAME, 
+        GITHUB_JENKINS_CLIENT_ID    = var.GITHUB_JENKINS_CLIENT_ID, 
+        GITHUB_JENKINS_CLIENT_SECRET = var.GITHUB_JENKINS_CLIENT_SECRET 
+      })}\" > /tmp/github_auth.groovy",
+      "cp /tmp/github_auth.groovy /home/ubuntu/github_auth.groovy"
     ]
   }
 }

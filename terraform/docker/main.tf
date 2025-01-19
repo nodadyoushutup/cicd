@@ -28,4 +28,10 @@ resource "docker_container" "jenkins" {
     volume_name = docker_volume.jenkins.name
     container_path = "/var/jenkins_home"
   }
+
+  volumes {
+    container_path = "/usr/share/jenkins/ref/init.groovy.d"
+    host_path = "./init.groovy.d"
+  }
+
 }

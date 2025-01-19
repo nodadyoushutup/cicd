@@ -18,6 +18,8 @@ resource "docker_container" "jenkins" {
   name  = "jenkins"
   image = docker_image.jenkins.image_id
   env = ["JAVA_OPTS=${join(" ", local.java_opts)}"]
+  restart = "unless-stopped"
+  start = false
   
   ports {
     internal = "8080"
@@ -32,6 +34,10 @@ resource "docker_container" "jenkins" {
   volumes {
     container_path = "/usr/share/jenkins/ref/init.groovy.d"
     host_path = "/home/ubuntu/init.groovy.d"
+  }
+
+  healthcheck {
+    test = "http://localhost:8080/whoAmI/api/json?tree=authenticated"
   }
 
 }

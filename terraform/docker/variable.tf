@@ -57,3 +57,18 @@ variable "ISCSI_BASE_NAME" {
   type = string
   default = null
 }
+
+variable "GITHUB_USERNAME" {
+  type = string
+  default = null
+}
+
+variable "GITHUB_JENKINS_CLIENT_ID" {
+  type = string
+  default = null
+}
+
+variable "GITHUB_JENKINS_CLIENT_SECRET" {
+  type = string
+  default = null
+}

@@ -5,11 +5,11 @@ import org.jenkinsci.plugins.GithubAuthorizationStrategy
 import hudson.security.AuthorizationStrategy
 import hudson.security.FullControlOnceLoggedInAuthorizationStrategy
 
-String githubWebUri   = 'https://github.com'
-String githubApiUri   = 'https://api.github.com'
-String clientID       = '"${GITHUB_JENKINS_CLIENT_ID}"'
-String clientSecret   = '"${GITHUB_JENKINS_CLIENT_SECRET}"'
-String oauthScopes    = 'read:org'
+String githubWebUri   = \'https://github.com\'
+String githubApiUri   = \'https://api.github.com\'
+String clientID       = \'"${GITHUB_JENKINS_CLIENT_ID}"\'
+String clientSecret   = \'"${GITHUB_JENKINS_CLIENT_SECRET}"\'
+String oauthScopes    = \'read:org\'
 
 // Instantiate the GitHub Security Realm
 SecurityRealm githubRealm = new GithubSecurityRealm(
@@ -33,9 +33,9 @@ if (!githubRealm.equals(jenkins.getSecurityRealm())) {
 
 //permissions are ordered similar to web UI
 //Admin User Names
-String adminUserNames = '"${GITHUB_USERNAME}"'
+String adminUserNames = \'"${GITHUB_USERNAME}"\'
 //Participant in Organization
-String organizationNames = ''
+String organizationNames = \'\'
 //Use Github repository permissions
 boolean useRepositoryPermissions = true
 //Grant READ permissions to all Authenticated Users

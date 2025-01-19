@@ -26,7 +26,7 @@ resource "null_resource" "create_remote_file" {
     inline = [
       "mkdir -p /home/ubuntu/init.groovy.d",
       "chown ubuntu:ubuntu /home/ubuntu/init.groovy.d",
-      "echo \"${github_auth}\" > /tmp/github_auth.groovy",
+      "echo '${github_auth.content}' > /tmp/github_auth.groovy"
       # "cp /tmp/github_auth.groovy /home/ubuntu/github_auth.groovy"
     ]
   }

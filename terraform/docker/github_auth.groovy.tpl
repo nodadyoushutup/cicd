@@ -71,6 +71,11 @@ if (!authStrategy.equals(jenkins.getAuthorizationStrategy())) {
     println "Authorization Strategy is already configured."
 }
 
+// Set the Jenkins URL
+def jenkinsLoc = JenkinsLocationConfiguration.get()
+jenkinsLoc.setUrl("https://jenkins.nodadyoushutup.com/")
+jenkinsLoc.save()
+
 // Save changes
 jenkins.save()
 

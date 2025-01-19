@@ -13,6 +13,10 @@ locals {
 }
 
 resource "null_resource" "create_remote_file" {
+  triggers = {
+    always_run = timestamp()
+  }
+  
   connection {
     type        = "ssh"
     user        = var.VIRTUAL_MACHINE_USERNAME

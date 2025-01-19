@@ -72,3 +72,8 @@ variable "GITHUB_JENKINS_CLIENT_SECRET" {
   type = string
   default = null
 }
+
+variable "JENKINS_URL" {
+  type = string
+  default = null
+}

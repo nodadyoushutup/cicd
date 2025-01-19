@@ -2,14 +2,23 @@ locals {
   java_opts = [
     "-Djenkins.install.runSetupWizard=false"
   ]
-  github_auth = templatefile(
-    "${path.module}/github_auth.groovy.tpl", 
-    {
-      GITHUB_USERNAME = var.GITHUB_USERNAME, 
-      GITHUB_JENKINS_CLIENT_ID = var.GITHUB_JENKINS_CLIENT_ID, 
-      GITHUB_JENKINS_CLIENT_SECRET = var.GITHUB_JENKINS_CLIENT_SECRET 
-    }
-  )
+  template = {
+    auth_groovy = templatefile(
+      "${path.module}/auth.groovy.tpl", 
+      {
+        GITHUB_USERNAME = var.GITHUB_USERNAME, 
+        GITHUB_JENKINS_CLIENT_ID = var.GITHUB_JENKINS_CLIENT_ID, 
+        GITHUB_JENKINS_CLIENT_SECRET = var.GITHUB_JENKINS_CLIENT_SECRET 
+      }
+    )
+    system_groovy = templatefile(
+      "${path.module}/system.groovy.tpl", 
+      {
+        JENKINS_URL = var.JENKINS_URL
+      }
+    )
+  }
+  
 }
 
 resource "null_resource" "create_remote_file" {
@@ -29,10 +38,13 @@ resource "null_resource" "create_remote_file" {
     inline = [
       "mkdir -p /home/ubuntu/init.groovy.d",
       "chown ubuntu:ubuntu /home/ubuntu/init.groovy.d",
-      "cat <<EOF > /tmp/github_auth.groovy",
-      "${local.github_auth}",
+      "cat <<EOF > /tmp/auth.groovy",
+      "${local.template.auth_groovy}",
       "EOF",
-      "cp /tmp/github_auth.groovy /home/ubuntu/github_auth.groovy"
+      "cat <<EOF > /tmp/system.groovy",
+      "${local.template.system_groovy}",
+      "EOF",
+      "cp /tmp/system.groovy /home/ubuntu/system.groovy"
     ]
   }
 }

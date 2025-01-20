@@ -29,19 +29,19 @@ agent.setRetentionStrategy(new RetentionStrategy.Always())
 Jenkins jenkins = Jenkins.get()
 
 // Check if agent already exists
-if (jenkins.getNode(agentName) == null) { 
-    jenkins.addNode(agent)
+if (jenkinsAgent.getNode(agentName) == null) { 
+    jenkinsAgent.addNode(agent)
     println "Agent configured successfully."
 } else { 
     println "Agent already exists. No changes made."
 }
 
 // Save Jenkins configuration
-jenkins.save()
+jenkinsAgent.save()
 println 'Jenkins configuration saved successfully.'
 
 
 
-def agent = Jenkins.instance.getNode("simple-agent")
+def agent = jenkinsAgent.getNode("simple-agent")
 def secret = agent.getComputer().getJnlpMac()
 println "Agent secret: $${secret}"

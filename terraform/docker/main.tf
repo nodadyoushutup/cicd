@@ -19,7 +19,9 @@ locals {
     )
     agent_groovy = templatefile(
       "${path.module}/agent.groovy.tpl", 
-      {}
+      {
+        agentName = "test"
+      }
     )
   }
   exec = {

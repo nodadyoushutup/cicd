@@ -11,6 +11,9 @@ String numExecutors = '1'
 Node.Mode agentMode = Node.Mode.NORMAL
 String labelString = 'simple'
 
+// Manually specified API key (JNLP secret)
+String customSecret = "your-custom-api-key-here"
+
 // Create JNLP launcher for the agent
 def jnlpLauncher = new JNLPLauncher()
 
@@ -32,6 +35,15 @@ def jenkinsAgent = Jenkins.get()
 if (jenkinsAgent.getNode(agentName) == null) { 
     jenkinsAgent.addNode(agent)
     println "Agent configured successfully."
+    
+    // Set custom JNLP secret after adding the agent
+    def computer = agent.toComputer()
+    if (computer != null) {
+        computer.setJnlpMac(customSecret)
+        println "Custom API key (secret) has been set."
+    } else {
+        println "Error: Could not set custom secret, agent may not be fully initialized."
+    }
 } else { 
     println "Agent already exists. No changes made."
 }
@@ -40,7 +52,7 @@ if (jenkinsAgent.getNode(agentName) == null) {
 jenkinsAgent.save()
 println 'Jenkins configuration saved successfully.'
 
-// Get and print agent secret safely
+// Verify and print agent secret safely
 def computer = agent.toComputer()
 if (computer != null) {
     def secret = computer.getJnlpMac()

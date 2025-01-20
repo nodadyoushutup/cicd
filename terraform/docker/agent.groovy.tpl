@@ -38,9 +38,9 @@ Jenkins jenkins = Jenkins.get()
 // Check if agent already exists
 if (jenkins.getNode(agentName) == null) {
     jenkins.addNode(agent)
-    println "Agent '${agentName}' configured successfully."
+    println "Agent configured successfully."
 } else {
-    println "Agent '${agentName}' already exists. No changes made."
+    println "Agent already exists. No changes made."
 }
 
 // Save Jenkins configuration

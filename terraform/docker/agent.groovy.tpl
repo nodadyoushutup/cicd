@@ -53,7 +53,7 @@ if (computer != null) {
     def secretFile = new File(secretFilePath)
     secretFile.text = secret
     
-    println "Agent secret written to: ${secretFilePath}"
+    println "Agent secret written to: \$${secretFilePath}"
 } else {
     println "Error: Could not retrieve agent secret, agent may not be fully initialized."
 }

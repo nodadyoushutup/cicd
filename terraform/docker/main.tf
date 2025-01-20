@@ -18,46 +18,51 @@ locals {
       }
     )
   }
-  exec_connection = {
-    type = "ssh"
-    user = var.VIRTUAL_MACHINE_USERNAME
-    private_key = file(var.SSH_PRIVATE_KEY)
-    host = var.PROXMOX_VE_SSH_NODE_ADDRESS
-    port = 10122
+  exec = {
+    connection = {
+      type = "ssh"
+      user = var.VIRTUAL_MACHINE_USERNAME
+      private_key = file(var.SSH_PRIVATE_KEY)
+      host = var.PROXMOX_VE_SSH_NODE_ADDRESS
+      port = 10122
+    }
+    inline = {
+      init_jenkins = [
+        "mkdir -p /home/${var.VIRTUAL_MACHINE_USERNAME}/init.groovy.d",
+        "chown ${var.VIRTUAL_MACHINE_USERNAME}:${var.VIRTUAL_MACHINE_USERNAME} /home/${var.VIRTUAL_MACHINE_USERNAME}/init.groovy.d",
+        "cat <<EOF > /tmp/auth.groovy",
+        "${local.template.auth_groovy}",
+        "EOF",
+        "cat <<EOF > /tmp/system.groovy",
+        "${local.template.system_groovy}",
+        "EOF",
+        "cp /tmp/auth.groovy /home/${var.VIRTUAL_MACHINE_USERNAME}/auth.groovy",
+        "cp /tmp/system.groovy /home/${var.VIRTUAL_MACHINE_USERNAME}/system.groovy"
+      ]
+    }
   }
 }
 
-resource "null_resource" "create_remote_file" {
+resource "null_resource" "exec" {
   triggers = {
     always_run = timestamp()
   }
   
   connection {
-    type = local.exec_connection.type
-    user = local.exec_connection.user
-    private_key = local.exec_connection.private_key
-    host = local.exec_connection.host
-    port = local.exec_connection.port
+    type = local.exec.connection.type
+    user = local.exec.connection.user
+    private_key = local.exec.connection.private_key
+    host = local.exec.connection.host
+    port = local.exec.connection.port
   }
 
   provisioner "remote-exec" {
-    inline = [
-      "mkdir -p /home/${var.VIRTUAL_MACHINE_USERNAME}/init.groovy.d",
-      "chown ${var.VIRTUAL_MACHINE_USERNAME}:${var.VIRTUAL_MACHINE_USERNAME} /home/${var.VIRTUAL_MACHINE_USERNAME}/init.groovy.d",
-      "cat <<EOF > /tmp/auth.groovy",
-      "${local.template.auth_groovy}",
-      "EOF",
-      "cat <<EOF > /tmp/system.groovy",
-      "${local.template.system_groovy}",
-      "EOF",
-      "cp /tmp/auth.groovy /home/${var.VIRTUAL_MACHINE_USERNAME}/auth.groovy",
-      "cp /tmp/system.groovy /home/${var.VIRTUAL_MACHINE_USERNAME}/system.groovy"
-    ]
+    inline = local.exec.inline.init_jenkins
   }
 }
 
 resource "docker_image" "jenkins" {
-  depends_on = [null_resource.create_remote_file]
+  depends_on = [null_resource.exec]
   name = "ghcr.io/nodadyoushutup/jenkins:2.493"
 }
 

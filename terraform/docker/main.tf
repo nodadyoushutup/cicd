@@ -113,3 +113,13 @@ resource "docker_container" "jenkins" {
   }
 
 }
+
+# resource "docker_image" "agent" {
+#   depends_on = [null_resource.exec]
+#   name = "ghcr.io/nodadyoushutup/jenkins:2.493"
+# }
+
+# resource "docker_volume" "agent" {
+#   depends_on = [docker_image.agent]
+#   name = "agent"
+# }

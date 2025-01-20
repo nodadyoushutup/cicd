@@ -12,10 +12,10 @@ Node.Mode agentMode = Node.Mode.NORMAL
 String labelString = 'simple'
 
 // Create JNLP launcher for the agent
-JNLPLauncher jnlpLauncher = new JNLPLauncher()
+def jnlpLauncher = new JNLPLauncher()
 
 // Define the agent
-DumbSlave agent = new DumbSlave(
+def agent = new DumbSlave(
     agentName, 
     remoteFS, 
     jnlpLauncher
@@ -26,7 +26,7 @@ agent.setLabelString(labelString)
 agent.setRetentionStrategy(new RetentionStrategy.Always())
 
 // Get Jenkins instance
-Jenkins jenkins = Jenkins.get()
+def jenkinsAgent = Jenkins.get()
 
 // Check if agent already exists
 if (jenkinsAgent.getNode(agentName) == null) { 
@@ -40,8 +40,11 @@ if (jenkinsAgent.getNode(agentName) == null) {
 jenkinsAgent.save()
 println 'Jenkins configuration saved successfully.'
 
-
-
-
-def secret = agent.getComputer().getJnlpMac()
-println "Agent secret: $${secret}"
+// Get and print agent secret safely
+def computer = agent.toComputer()
+if (computer != null) {
+    def secret = computer.getJnlpMac()
+    println "Agent secret: \$${secret}"
+} else {
+    println "Error: Could not retrieve agent secret, agent may not be fully initialized."
+}

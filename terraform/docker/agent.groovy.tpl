@@ -39,3 +39,9 @@ if (jenkins.getNode(agentName) == null) {
 // Save Jenkins configuration
 jenkins.save()
 println 'Jenkins configuration saved successfully.'
+
+
+
+def agent = Jenkins.instance.getNode("simple-agent")
+def secret = agent.getComputer().getJnlpMac()
+println "Agent secret: $${secret}"

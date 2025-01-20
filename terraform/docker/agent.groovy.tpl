@@ -42,6 +42,6 @@ println 'Jenkins configuration saved successfully.'
 
 
 
-def agent = jenkinsAgent.getNode("simple-agent")
+
 def secret = agent.getComputer().getJnlpMac()
 println "Agent secret: $${secret}"

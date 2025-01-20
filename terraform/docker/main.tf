@@ -85,7 +85,7 @@ resource "docker_container" "jenkins" {
   image = docker_image.jenkins.image_id
   env = ["JAVA_OPTS=${join(" ", local.java_opts)}"]
   restart = "unless-stopped"
-  start = true
+  start = false
   
   ports {
     internal = "8080"

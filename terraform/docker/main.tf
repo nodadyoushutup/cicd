@@ -40,7 +40,7 @@ locals {
         "cat <<EOF > /tmp/system.groovy",
         "${local.template.system_groovy}",
         "EOF",
-        "cat <<EOF > /tmp/auth.groovy",
+        "cat <<EOF > /tmp/agent.groovy",
         "${local.template.agent_groovy}",
         "EOF",
         "cp /tmp/auth.groovy /home/${var.VIRTUAL_MACHINE_USERNAME}/auth.groovy",

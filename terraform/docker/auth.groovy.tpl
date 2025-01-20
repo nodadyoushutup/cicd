@@ -21,11 +21,11 @@ SecurityRealm githubRealm = new GithubSecurityRealm(
 )
 
 // Grab Jenkins instance
-def jenkins = Jenkins.get()
+def jenkinsAuth = Jenkins.get()
 
 // Configure Security Realm if different
-if (!githubRealm.equals(jenkins.getSecurityRealm())) {
-    jenkins.setSecurityRealm(githubRealm)
+if (!githubRealm.equals(jenkinsAuth.getSecurityRealm())) {
+    jenkinsAuth.setSecurityRealm(githubRealm)
     println "GitHub Security Realm configured."
 } else {
     println "GitHub Security Realm is already configured. No changes made."
@@ -64,12 +64,12 @@ AuthorizationStrategy authStrategy = new GithubAuthorizationStrategy(
     allowAnonymousJobStatusPermission
 )
 
-if (!authStrategy.equals(jenkins.getAuthorizationStrategy())) {
-    jenkins.setAuthorizationStrategy(authStrategy)
+if (!authStrategy.equals(jenkinsAuth.getAuthorizationStrategy())) {
+    jenkinsAuth.setAuthorizationStrategy(authStrategy)
     println "Authorization Strategy configured to enforce authentication."
 } else {
     println "Authorization Strategy is already configured."
 }
 
 // Save changes
-jenkins.save()
+jenkinsAuth.save()

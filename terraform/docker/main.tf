@@ -72,7 +72,7 @@ resource "null_resource" "exec" {
 
 resource "docker_image" "jenkins" {
   depends_on = [null_resource.exec]
-  name = "ghcr.io/nodadyoushutup/jenkins:2.493"
+  name = "ghcr.io/nodadyoushutup/jenkins-controller:2.493"
 }
 
 resource "docker_volume" "jenkins" {

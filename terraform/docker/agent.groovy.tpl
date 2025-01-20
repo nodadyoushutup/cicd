@@ -47,7 +47,7 @@ if (computer != null) {
     println "Agent secret: \$${secret}"
 
     // Define the file path
-    def secretFilePath = "/usr/share/jenkins/ref/init.groovy.d/agent_secret.txt"
+    def secretFilePath = "/secret/jenkins_agent.txt"
     
     // Write the secret to the file
     def secretFile = new File(secretFilePath)

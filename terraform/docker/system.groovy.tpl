@@ -1,10 +1,13 @@
 import jenkins.model.Jenkins
 import jenkins.model.JenkinsLocationConfiguration
 
-// Grab Jenkins instance
-def jenkinsSystem = Jenkins.get()
+// Get the Jenkins location configuration
+def jenkinsLocation = JenkinsLocationConfiguration.get()
 
 // Set the Jenkins URL
-def jenkins = JenkinsLocationConfiguration.get()
-jenkinsSystem.setUrl("${JENKINS_URL}")
-jenkinsSystem.save()
+jenkinsLocation.setUrl("https://jenkins.nodadyoushutup.com")
+
+// Save the changes
+jenkinsLocation.save()
+
+println("Jenkins URL has been set to: " + jenkinsLocation.getUrl())

@@ -19,9 +19,7 @@ locals {
     )
     agent_groovy = templatefile(
       "${path.module}/agent.groovy.tpl", 
-      {
-        JENKINS_URL = var.JENKINS_URL
-      }
+      {}
     )
   }
   exec = {

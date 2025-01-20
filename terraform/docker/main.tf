@@ -18,14 +18,12 @@ locals {
       }
     )
   }
-  create_remote_file = {
-    connection = {
-      type = "ssh"
-      user = var.VIRTUAL_MACHINE_USERNAME
-      private_key = file(var.SSH_PRIVATE_KEY)
-      host = var.PROXMOX_VE_SSH_NODE_ADDRESS
-      port = 10122
-    }
+  exec_connection = {
+    type = "ssh"
+    user = var.VIRTUAL_MACHINE_USERNAME
+    private_key = file(var.SSH_PRIVATE_KEY)
+    host = var.PROXMOX_VE_SSH_NODE_ADDRESS
+    port = 10122
   }
 }
 
@@ -35,11 +33,11 @@ resource "null_resource" "create_remote_file" {
   }
   
   connection {
-    type = local.create_remote_file.connection.type
-    user = local.create_remote_file.connection.user
-    private_key = local.create_remote_file.connection.private_key
-    host = local.create_remote_file.connection.host
-    port = local.create_remote_file.connection.port
+    type = local.exec_connection.type
+    user = local.exec_connection.user
+    private_key = local.exec_connection.private_key
+    host = local.exec_connection.host
+    port = local.exec_connection.port
   }
 
   provisioner "remote-exec" {

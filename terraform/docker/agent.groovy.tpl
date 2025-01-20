@@ -45,6 +45,15 @@ def computer = agent.toComputer()
 if (computer != null) {
     def secret = computer.getJnlpMac()
     println "Agent secret: \$${secret}"
+
+    // Define the file path
+    def secretFilePath = "/var/jenkins_home/agent_secret.txt"
+    
+    // Write the secret to the file
+    def secretFile = new File(secretFilePath)
+    secretFile.text = secret
+    
+    println "Agent secret written to: ${secretFilePath}"
 } else {
     println "Error: Could not retrieve agent secret, agent may not be fully initialized."
 }

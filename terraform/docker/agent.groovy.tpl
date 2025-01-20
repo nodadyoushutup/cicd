@@ -23,7 +23,7 @@ DumbSlave agent = new DumbSlave(
 agent.setNumExecutors(Integer.parseInt(numExecutors))
 agent.setMode(agentMode)
 agent.setLabelString(labelString)
-agent.setRetentionStrategy(RetentionStrategy.INSTANCE_ALWAYS)
+agent.setRetentionStrategy(new RetentionStrategy.Always())
 
 // Get Jenkins instance
 Jenkins jenkins = Jenkins.get()

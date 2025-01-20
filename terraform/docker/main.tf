@@ -27,7 +27,7 @@ locals {
       port = 10122
     }
     inline = {
-      init_jenkins = [
+      jenkins = [
         "mkdir -p /home/${var.VIRTUAL_MACHINE_USERNAME}/init.groovy.d",
         "chown ${var.VIRTUAL_MACHINE_USERNAME}:${var.VIRTUAL_MACHINE_USERNAME} /home/${var.VIRTUAL_MACHINE_USERNAME}/init.groovy.d",
         "cat <<EOF > /tmp/auth.groovy",
@@ -57,7 +57,7 @@ resource "null_resource" "exec" {
   }
 
   provisioner "remote-exec" {
-    inline = local.exec.inline.init_jenkins
+    inline = local.exec.inline.jenkins
   }
 }
 

@@ -28,17 +28,7 @@ variable "VIRTUAL_MACHINE_USERNAME" {
   default = null
 }
 
-variable "VIRTUAL_MACHINE_PASSWORD" {
-  type = string
-  default = null
-}
-
 variable "SSH_PRIVATE_KEY" {
-  type = string
-  default = null
-}
-
-variable "SSH_PUBLIC_KEY" {
   type = string
   default = null
 }

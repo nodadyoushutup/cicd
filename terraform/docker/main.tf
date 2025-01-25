@@ -4,7 +4,7 @@ locals {
   ]
   template = {
     auth_groovy = templatefile(
-      "${path.module}/auth.groovy.tpl", 
+      "${path.module}/template/auth.groovy.tpl", 
       {
         GITHUB_USERNAME = var.GITHUB_USERNAME, 
         GITHUB_JENKINS_CLIENT_ID = var.GITHUB_JENKINS_CLIENT_ID, 
@@ -12,13 +12,13 @@ locals {
       }
     )
     system_groovy = templatefile(
-      "${path.module}/system.groovy.tpl", 
+      "${path.module}/template/system.groovy.tpl", 
       {
         JENKINS_URL = var.JENKINS_URL
       }
     )
     agent_groovy = templatefile(
-      "${path.module}/agent.groovy.tpl", 
+      "${path.module}/template/agent.groovy.tpl", 
       {}
     )
   }

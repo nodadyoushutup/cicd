@@ -43,11 +43,6 @@ variable "NAS_LOCAL_IP" {
   default = null
 }
 
-variable "ISCSI_BASE_NAME" {
-  type = string
-  default = null
-}
-
 variable "GITHUB_USERNAME" {
   type = string
   default = null

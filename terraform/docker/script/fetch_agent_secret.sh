@@ -10,5 +10,4 @@ KEY="$3"
 SECRET_VALUE=$(ssh -o StrictHostKeyChecking=no -i "$KEY" "$USER@$HOST" ls -la /home/ubuntu 2>/dev/null)
 
 # Return in JSON format
-# echo "{\"secret\": \"${SECRET_VALUE}\"}"
-echo "{\"secret\": \"test\"}"
+echo "{\"secret\": \"${SECRET_VALUE}\"}"

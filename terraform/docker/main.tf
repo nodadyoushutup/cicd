@@ -95,6 +95,7 @@ resource "docker_container" "jenkins" {
   env = ["JAVA_OPTS=${join(" ", local.java_opts)}"]
   restart = "unless-stopped"
   wait = true
+  memory = 2048
   memory_swap = 1024
   
   ports {

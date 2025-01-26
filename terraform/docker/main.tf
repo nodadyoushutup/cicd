@@ -94,7 +94,6 @@ resource "docker_container" "jenkins" {
   image = docker_image.jenkins.image_id
   env = ["JAVA_OPTS=${join(" ", local.java_opts)}"]
   restart = "unless-stopped"
-  start = true
   
   ports {
     internal = "8080"
@@ -133,7 +132,30 @@ data "external" "agent_secret" {
   ]
 }
 
-output "debug" {
-  depends_on = [data.external.agent_secret]
+output "agent_secret" {
+  depends_on = [ data.external.agent_secret ]
   value = data.external.agent_secret.result.secret
+}
+
+resource "docker_image" "agent" {
+  depends_on = [data.external.agent_secret]
+  name = "ghcr.io/nodadyoushutup/jenkins-agent:3283.v92c105e0f819-7"
+}
+
+resource "docker_volume" "agent" {
+  depends_on = [docker_image.agent]
+  name = "agent"
+}
+
+resource "docker_container" "agent" {
+  depends_on = [docker_volume.agent]
+  name  = "agent"
+  image = docker_image.agent.image_id
+  env = [
+    "JENKINS_URL=192.168.1.101:8080",
+    "JENKINS_SECRET=${data.external.agent_secret.result.secret}",
+    "JENKINS_AGENT_NAME=simple-agent"
+  ]
+  restart = "unless-stopped"
+  init = true
 }

@@ -50,7 +50,11 @@ locals {
         "EOF",
         "cp /tmp/auth.groovy /home/${var.VIRTUAL_MACHINE_USERNAME}/init.groovy.d/auth.groovy",
         "cp /tmp/system.groovy /home/${var.VIRTUAL_MACHINE_USERNAME}/init.groovy.d/system.groovy",
-        "cp /tmp/agent.groovy /home/${var.VIRTUAL_MACHINE_USERNAME}/init.groovy.d/agent.groovy"
+        "cp /tmp/agent.groovy /home/${var.VIRTUAL_MACHINE_USERNAME}/init.groovy.d/agent.groovy",
+        "chown -R ${var.VIRTUAL_MACHINE_USERNAME}:${var.VIRTUAL_MACHINE_USERNAME} /home/${var.VIRTUAL_MACHINE_USERNAME}/init.groovy.d",
+        "rm -rf /tmp/auth.groovy",
+        "rm -rf /tmp/system.groovy",
+        "rm -rf /tmp/agent.groovy"
       ]
     }
   }

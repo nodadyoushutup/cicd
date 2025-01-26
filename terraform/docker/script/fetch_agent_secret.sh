@@ -7,7 +7,7 @@ USER="$2"
 KEY="$3"
 
 SECRET_VALUE=$(ssh -o StrictHostKeyChecking=no -i "$KEY" "$USER@$HOST" \
-    cat /home/ubuntu/.secret/agent_secret.txt 2>/dev/null)
+    cat /home/ubuntu/.secret/agent_secret 2>/dev/null)
 
 # Return in JSON format
 echo "{\"secret\": \"${SECRET_VALUE}\"}"

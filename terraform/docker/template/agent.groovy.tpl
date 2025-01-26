@@ -47,7 +47,7 @@ if (computer != null) {
     println "Agent secret: \$${secret}"
 
     // Define the file path
-    def secretFilePath = "/secret/jenkins_agent.txt"
+    def secretFilePath = "/secret/jenkins_agent"
     
     // Write the secret to the file
     def secretFile = new File(secretFilePath)

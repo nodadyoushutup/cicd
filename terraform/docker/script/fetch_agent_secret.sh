@@ -13,9 +13,9 @@ SECRET_VALUE=$(
   -o IdentityFile="$KEY" \
   -l "$USER" \
   -p "$PORT" -- \
-  "$$HOST" \
+  "$HOST" \
   "cat /home/$USER/secret/jenkins_agent"
 )
 
 # Return in JSON format
-echo "{\"secret\": \"$KEY\"}"
+echo "{\"secret\": \"$SECRET_VALUE\"}"

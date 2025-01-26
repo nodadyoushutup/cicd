@@ -62,8 +62,6 @@ resource "proxmox_virtual_environment_vm" "cicd" {
     # OPTIONAL
     ################################################
 
-    kvm_arguments = "cgroup_enable=memory swapaccount=1"
-
     agent {
         enabled = true
         timeout = "5m"

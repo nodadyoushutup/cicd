@@ -43,6 +43,11 @@ variable "NAS_LOCAL_IP" {
   default = null
 }
 
+variable "NAS_NFS_MEDIA" {
+  type = string
+  default = null
+}
+
 variable "GITHUB_USERNAME" {
   type = string
   default = null

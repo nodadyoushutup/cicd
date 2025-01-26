@@ -24,7 +24,7 @@ resource "proxmox_virtual_environment_file" "cicd_cloud_config" {
         shell: /bin/bash
         sudo: ALL=(ALL) NOPASSWD:ALL
     mounts:
-      - ["${var.NAS_LOCAL_IP}:/mnt/epool/media", "/mnt/epool/media", "nfs", "defaults,nofail", "0", "2"]
+      - ["${var.NAS_LOCAL_IP}:${var.NAS_NFS_MEDIA}", "${var.NAS_NFS_MEDIA}", "nfs", "defaults,nofail", "0", "2"]
     write_files:
       - path: /tmp/.gitconfig
         owner: ${var.VIRTUAL_MACHINE_USERNAME}:${var.VIRTUAL_MACHINE_USERNAME}
@@ -37,9 +37,9 @@ resource "proxmox_virtual_environment_file" "cicd_cloud_config" {
         encoding: b64
         content: ${base64encode(data.local_file.ssh_private_key.content)}
     runcmd:
-      - su - ${var.VIRTUAL_MACHINE_USERNAME} -c "ssh-import-id gh:nodadyoushutup"
-      - mkdir -p /mnt/epool/media
-      - chown ${var.VIRTUAL_MACHINE_USERNAME}:${var.VIRTUAL_MACHINE_USERNAME} /mnt/epool/media
+      - su - ${var.VIRTUAL_MACHINE_USERNAME} -c "ssh-import-id gh:${var.GITHUB_USERNAME}"
+      - mkdir -p ${var.NAS_NFS_MEDIA}
+      - chown ${var.VIRTUAL_MACHINE_USERNAME}:${var.VIRTUAL_MACHINE_USERNAME} ${var.NAS_NFS_MEDIA}
       - mv /tmp/id_rsa /home/${var.VIRTUAL_MACHINE_USERNAME}/.ssh/id_rsa
       - mv /tmp/.gitconfig /home/${var.VIRTUAL_MACHINE_USERNAME}/.gitconfig
       - echo "done" > /tmp/cloud-config.done

@@ -16,7 +16,6 @@ SECRET_VALUE=$(
   "$$HOST" \
   "cat /home/$USER/secret/jenkins_agent"
  2>/dev/null)
-SECRET_VALUE=$(ssh -o StrictHostKeyChecking=no -i "$KEY" "$USER@$HOST" pwd 2>/dev/null)
 
 # Return in JSON format
 echo "{\"secret\": \"${SECRET_VALUE}\"}"

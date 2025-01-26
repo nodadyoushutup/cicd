@@ -14,7 +14,6 @@ resource "proxmox_virtual_environment_file" "cicd_cloud_config" {
   source_raw {
     data = <<-EOF
     #cloud-config
-    hostname: cicd
     groups:
       - docker: [${var.VIRTUAL_MACHINE_USERNAME}]
     users:

@@ -117,12 +117,17 @@ resource "docker_container" "jenkins" {
 
 }
 
-# resource "docker_image" "agent" {
-#   depends_on = [null_resource.exec]
-#   name = "ghcr.io/nodadyoushutup/jenkins:2.493"
-# }
+data "external" "agent_secret" {
+  depends_on = [docker_container.jenkins]
+  program = [
+    "${path.module}/fetch_agent_secret.sh",
+    local.exec.connection.host,
+    local.exec.connection.user,
+    local.exec.connection.private_key
+  ]
+}
 
-# resource "docker_volume" "agent" {
-#   depends_on = [docker_image.agent]
-#   name = "agent"
-# }
+output "debug" {
+  depends_on = [data.external.agent_secret]
+  value = data.external.agent_secret
+}

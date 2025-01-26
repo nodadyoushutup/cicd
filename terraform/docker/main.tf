@@ -56,70 +56,70 @@ locals {
   }
 }
 
-resource "null_resource" "exec" {
-  triggers = {
-    always_run = timestamp()
-  }
+# resource "null_resource" "exec" {
+#   triggers = {
+#     always_run = timestamp()
+#   }
   
-  connection {
-    type = local.exec.connection.type
-    user = local.exec.connection.user
-    private_key = local.exec.connection.private_key
-    host = local.exec.connection.host
-    port = local.exec.connection.port
-  }
+#   connection {
+#     type = local.exec.connection.type
+#     user = local.exec.connection.user
+#     private_key = local.exec.connection.private_key
+#     host = local.exec.connection.host
+#     port = local.exec.connection.port
+#   }
 
-  provisioner "remote-exec" {
-    inline = local.exec.inline.jenkins
-  }
-}
+#   provisioner "remote-exec" {
+#     inline = local.exec.inline.jenkins
+#   }
+# }
 
-resource "docker_image" "jenkins" {
-  depends_on = [null_resource.exec]
-  name = "ghcr.io/nodadyoushutup/jenkins-controller:2.494"
-}
+# resource "docker_image" "jenkins" {
+#   depends_on = [null_resource.exec]
+#   name = "ghcr.io/nodadyoushutup/jenkins-controller:2.494"
+# }
 
-resource "docker_volume" "jenkins" {
-  depends_on = [docker_image.jenkins]
-  name = "jenkins"
-}
+# resource "docker_volume" "jenkins" {
+#   depends_on = [docker_image.jenkins]
+#   name = "jenkins"
+# }
 
-resource "docker_container" "jenkins" {
-  depends_on = [docker_volume.jenkins]
-  name  = "jenkins"
-  image = docker_image.jenkins.image_id
-  env = ["JAVA_OPTS=${join(" ", local.java_opts)}"]
-  restart = "unless-stopped"
-  start = true
+# resource "docker_container" "jenkins" {
+#   depends_on = [docker_volume.jenkins]
+#   name  = "jenkins"
+#   image = docker_image.jenkins.image_id
+#   env = ["JAVA_OPTS=${join(" ", local.java_opts)}"]
+#   restart = "unless-stopped"
+#   start = true
   
-  ports {
-    internal = "8080"
-    external = "8080"
-  }
+#   ports {
+#     internal = "8080"
+#     external = "8080"
+#   }
 
-  volumes {
-    volume_name = docker_volume.jenkins.name
-    container_path = "/var/jenkins_home"
-  }
+#   volumes {
+#     volume_name = docker_volume.jenkins.name
+#     container_path = "/var/jenkins_home"
+#   }
 
-  volumes {
-    container_path = "/usr/share/jenkins/ref/init.groovy.d"
-    host_path = "/home/${var.VIRTUAL_MACHINE_USERNAME}/init.groovy.d"
-  }
+#   volumes {
+#     container_path = "/usr/share/jenkins/ref/init.groovy.d"
+#     host_path = "/home/${var.VIRTUAL_MACHINE_USERNAME}/init.groovy.d"
+#   }
 
-  volumes {
-    container_path = "/secret"
-    host_path = "/home/${var.VIRTUAL_MACHINE_USERNAME}/secret"
-  }
+#   volumes {
+#     container_path = "/secret"
+#     host_path = "/home/${var.VIRTUAL_MACHINE_USERNAME}/secret"
+#   }
 
-  healthcheck {
-    test = ["http://localhost:8080/whoAmI/api/json?tree=authenticated"]
-  }
+#   healthcheck {
+#     test = ["http://localhost:8080/whoAmI/api/json?tree=authenticated"]
+#   }
 
-}
+# }
 
 data "external" "agent_secret" {
-  depends_on = [docker_container.jenkins]
+  # depends_on = [docker_container.jenkins]
   program = [
     "${path.module}/script/fetch_agent_secret.sh",
     local.exec.connection.host,

@@ -62,7 +62,7 @@ resource "proxmox_virtual_environment_vm" "cicd" {
     # OPTIONAL
     ################################################
 
-    kvm_arguments = "-append cgroup_enable=memory swapaccount=1"
+    kvm_arguments = "cgroup_enable=memory swapaccount=1"
 
     agent {
         enabled = true

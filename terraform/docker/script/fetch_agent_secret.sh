@@ -15,7 +15,7 @@ SECRET_VALUE=$(
   -p "$PORT" -- \
   "$$HOST" \
   "cat /home/$USER/secret/jenkins_agent"
- 2>/dev/null)
+)
 
 # Return in JSON format
 echo "{\"secret\": \"${SECRET_VALUE}\"}"

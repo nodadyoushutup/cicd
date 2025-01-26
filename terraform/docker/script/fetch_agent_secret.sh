@@ -12,7 +12,7 @@ SECRET_VALUE=$(
   -o UserKnownHostsFile=/dev/null \
   -o IdentityFile="$KEY" \
   -l "$USER" \
-  -p 10122 -- \
+  -p "$PORT" -- \
   "$$HOST" \
   "cat /home/$USER/secret/jenkins_agent"
  2>/dev/null)

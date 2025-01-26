@@ -36,6 +36,7 @@ locals {
     inline = {
       jenkins = [
         "mkdir -p /home/${var.VIRTUAL_MACHINE_USERNAME}/.secret",
+        "chown ${var.VIRTUAL_MACHINE_USERNAME}:${var.VIRTUAL_MACHINE_USERNAME} /home/${var.VIRTUAL_MACHINE_USERNAME}/.secret",
         "mkdir -p /home/${var.VIRTUAL_MACHINE_USERNAME}/init.groovy.d",
         "chown ${var.VIRTUAL_MACHINE_USERNAME}:${var.VIRTUAL_MACHINE_USERNAME} /home/${var.VIRTUAL_MACHINE_USERNAME}/init.groovy.d",
         "cat <<EOF > /tmp/auth.groovy",

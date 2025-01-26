@@ -3,24 +3,27 @@ locals {
     "-Djenkins.install.runSetupWizard=false"
   ]
   template = {
-    auth_groovy = templatefile(
-      "${path.module}/template/auth.groovy.tpl", 
-      {
-        GITHUB_USERNAME = var.GITHUB_USERNAME, 
-        GITHUB_JENKINS_CLIENT_ID = var.GITHUB_JENKINS_CLIENT_ID, 
-        GITHUB_JENKINS_CLIENT_SECRET = var.GITHUB_JENKINS_CLIENT_SECRET 
-      }
-    )
-    system_groovy = templatefile(
-      "${path.module}/template/system.groovy.tpl", 
-      {
-        JENKINS_URL = var.JENKINS_URL
-      }
-    )
-    agent_groovy = templatefile(
-      "${path.module}/template/agent.groovy.tpl", 
-      {}
-    )
+    groovy = {
+      auth = templatefile(
+        "${path.module}/template/auth.groovy.tpl", 
+        {
+          GITHUB_USERNAME = var.GITHUB_USERNAME, 
+          GITHUB_JENKINS_CLIENT_ID = var.GITHUB_JENKINS_CLIENT_ID, 
+          GITHUB_JENKINS_CLIENT_SECRET = var.GITHUB_JENKINS_CLIENT_SECRET 
+        }
+      )
+      system = templatefile(
+        "${path.module}/template/system.groovy.tpl", 
+        {
+          JENKINS_URL = var.JENKINS_URL
+        }
+      )
+      agent = templatefile(
+        "${path.module}/template/agent.groovy.tpl", 
+        {}
+      )
+    }
+    
   }
   exec = {
     connection = {
@@ -36,13 +39,13 @@ locals {
         "mkdir -p /home/${var.VIRTUAL_MACHINE_USERNAME}/init.groovy.d",
         "chown ${var.VIRTUAL_MACHINE_USERNAME}:${var.VIRTUAL_MACHINE_USERNAME} /home/${var.VIRTUAL_MACHINE_USERNAME}/init.groovy.d",
         "cat <<EOF > /tmp/auth.groovy",
-        "${local.template.auth_groovy}",
+        "${local.template.auth.groovy}",
         "EOF",
         "cat <<EOF > /tmp/system.groovy",
-        "${local.template.system_groovy}",
+        "${local.template.system.groovy}",
         "EOF",
         "cat <<EOF > /tmp/agent.groovy",
-        "${local.template.agent_groovy}",
+        "${local.template.agent.groovy}",
         "EOF",
         "cp /tmp/auth.groovy /home/${var.VIRTUAL_MACHINE_USERNAME}/init.groovy.d/auth.groovy",
         "cp /tmp/system.groovy /home/${var.VIRTUAL_MACHINE_USERNAME}/init.groovy.d/system.groovy",

@@ -129,5 +129,5 @@ data "external" "agent_secret" {
 
 output "debug" {
   depends_on = [data.external.agent_secret]
-  value = data.external.agent_secret
+  value = data.external.agent_secret.result
 }

@@ -18,4 +18,4 @@ SECRET_VALUE=$(
 )
 
 # Return in JSON format
-echo "{\"secret\": \"${SECRET_VALUE}\"}"
+echo "{\"secret\": \"$KEY\"}"

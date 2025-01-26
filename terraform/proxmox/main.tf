@@ -36,6 +36,9 @@ resource "proxmox_virtual_environment_file" "cicd_cloud_config" {
         permissions: '0600'
         encoding: b64
         content: ${base64encode(data.local_file.ssh_private_key.content)}
+    bootcmd:
+      - echo "cgroup_enable=memory swapaccount=1" >> /etc/kernel/cmdline
+      - cloud-init clean && reboot
     runcmd:
       - su - ${var.VIRTUAL_MACHINE_USERNAME} -c "ssh-import-id gh:${var.GITHUB_USERNAME}"
       - mkdir -p ${var.NAS_NFS_MEDIA}

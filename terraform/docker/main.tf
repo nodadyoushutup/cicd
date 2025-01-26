@@ -124,7 +124,7 @@ data "external" "agent_secret" {
     "${path.module}/script/fetch_agent_secret.sh",
     local.exec.connection.host,
     local.exec.connection.user,
-    local.exec.connection.private_key,
+    var.SSH_PRIVATE_KEY,
     local.exec.connection.port
   ]
 }

@@ -6,6 +6,24 @@ data "local_file" "gitconfig" {
   filename = var.GITCONFIG
 }
 
+locals {
+  exec = {
+    connection = {
+      type = "ssh"
+      user = var.VIRTUAL_MACHINE_USERNAME
+      private_key = file(var.SSH_PRIVATE_KEY)
+      host = var.PROXMOX_VE_SSH_NODE_ADDRESS
+      port = 10122
+    }
+    inline = {
+      cicd = [
+        "sudo hostnamectl set-hostname cicd",
+        "sudo systemctl restart systemd-hostnamed"
+      ]
+    }
+  }
+}
+
 resource "proxmox_virtual_environment_file" "cicd_cloud_config" {
   content_type = "snippets"
   datastore_id = "local"
@@ -195,4 +213,23 @@ resource "proxmox_virtual_environment_vm" "cicd" {
     }
 
     vm_id = 1101
+}
+
+resource "null_resource" "exec" {
+  depends_on = [ proxmox_virtual_environment_vm.cicd ]
+  triggers = {
+    always_run = timestamp()
+  }
+  
+  connection {
+    type = local.exec.connection.type
+    user = local.exec.connection.user
+    private_key = local.exec.connection.private_key
+    host = local.exec.connection.host
+    port = local.exec.connection.port
+  }
+
+  provisioner "remote-exec" {
+    inline = local.exec.inline.cicd
+  }
 }

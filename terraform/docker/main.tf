@@ -120,7 +120,7 @@ resource "docker_container" "jenkins" {
 data "external" "agent_secret" {
   depends_on = [docker_container.jenkins]
   program = [
-    "${path.module}/fetch_agent_secret.sh",
+    "${path.module}/script/fetch_agent_secret.sh",
     local.exec.connection.host,
     local.exec.connection.user,
     local.exec.connection.private_key

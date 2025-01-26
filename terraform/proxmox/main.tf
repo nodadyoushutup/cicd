@@ -7,6 +7,13 @@ data "local_file" "gitconfig" {
 }
 
 locals {
+  template = {
+    gitconfig = templatefile(
+      "${path.module}/template/.gitconfig.tpl", 
+      {}
+    )
+  }
+
   exec = {
     connection = {
       type = "ssh"
@@ -16,9 +23,17 @@ locals {
       port = 10122
     }
     inline = {
-      cicd = [
+      hostname = [
         "sudo hostnamectl set-hostname cicd",
         "sudo systemctl restart systemd-hostnamed"
+      ]
+      gitconfig = [
+        "cat <<EOF > /tmp/.gitconfig",
+        "${local.template.gitconfig}",
+        "EOF",
+        "cp /tmp/.gitconfig /home/${var.VIRTUAL_MACHINE_USERNAME}/.gitconfig",
+        "chown ${var.VIRTUAL_MACHINE_USERNAME}:${var.VIRTUAL_MACHINE_USERNAME} /home/${var.VIRTUAL_MACHINE_USERNAME}/.gitconfig",
+        "rm -rf /tmp/.gitconfig",
       ]
     }
   }
@@ -43,11 +58,6 @@ resource "proxmox_virtual_environment_file" "cicd_cloud_config" {
     mounts:
       - ["${var.NAS_LOCAL_IP}:${var.NAS_NFS_MEDIA}", "${var.NAS_NFS_MEDIA}", "nfs", "defaults,nofail", "0", "2"]
     write_files:
-      - path: /tmp/.gitconfig
-        owner: ${var.VIRTUAL_MACHINE_USERNAME}:${var.VIRTUAL_MACHINE_USERNAME}
-        permissions: '0600'
-        encoding: b64
-        content: ${base64encode(data.local_file.gitconfig.content)}
       - path: /tmp/id_rsa
         owner: ${var.VIRTUAL_MACHINE_USERNAME}:${var.VIRTUAL_MACHINE_USERNAME}
         permissions: '0600'
@@ -58,7 +68,6 @@ resource "proxmox_virtual_environment_file" "cicd_cloud_config" {
       - mkdir -p ${var.NAS_NFS_MEDIA}
       - chown ${var.VIRTUAL_MACHINE_USERNAME}:${var.VIRTUAL_MACHINE_USERNAME} ${var.NAS_NFS_MEDIA}
       - mv /tmp/id_rsa /home/${var.VIRTUAL_MACHINE_USERNAME}/.ssh/id_rsa
-      - mv /tmp/.gitconfig /home/${var.VIRTUAL_MACHINE_USERNAME}/.gitconfig
       - echo "done" > /tmp/cloud-config.done
     EOF
 
@@ -230,6 +239,6 @@ resource "null_resource" "exec" {
   }
 
   provisioner "remote-exec" {
-    inline = local.exec.inline.cicd
+    inline = local.exec.inline.hostname
   }
 }

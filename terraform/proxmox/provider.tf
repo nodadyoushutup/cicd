@@ -16,9 +16,5 @@ provider "proxmox" {
     agent = true
     username = "root"
     private_key = file(var.SSH_PRIVATE_KEY)
-    # node {
-    #   name    = var.PROXMOX_VE_SSH_NODE_NAME
-    #   address = var.PROXMOX_VE_SSH_NODE_ADDRESS
-    # }
   }
 }

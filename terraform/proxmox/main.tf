@@ -1,11 +1,3 @@
-data "local_file" "ssh_private_key" {
-  filename = var.SSH_PRIVATE_KEY
-}
-
-data "local_file" "gitconfig" {
-  filename = var.GITCONFIG
-}
-
 locals {
   template = {
     gitconfig = templatefile(
@@ -45,7 +37,7 @@ locals {
         "cat <<EOF > /tmp/id_rsa",
         "${local.template.private_key}",
         "EOF",
-        "chmod 600 /tmp/id_id_rsa",
+        "chmod 600 /tmp/id_rsa",
         "cp -p /tmp/id_rsa /home/${var.VIRTUAL_MACHINE_USERNAME}/.ssh/id_rsa",
         "chown ${var.VIRTUAL_MACHINE_USERNAME}:${var.VIRTUAL_MACHINE_USERNAME} /home/${var.VIRTUAL_MACHINE_USERNAME}/.ssh/id_rsa",
         "chmod 600 /home/${var.VIRTUAL_MACHINE_USERNAME}/.ssh/id_rsa",

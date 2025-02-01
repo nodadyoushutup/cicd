@@ -11,14 +11,14 @@ provider "proxmox" {
   password = var.PROXMOX_VE_PASSWORD
   username = var.PROXMOX_VE_USERNAME
   random_vm_ids = true
-  insecure = true
+  insecure = false
   ssh {
     agent = true
     username = "root"
     private_key = file(var.SSH_PRIVATE_KEY)
-    node {
-      name    = var.PROXMOX_VE_SSH_NODE_NAME
-      address = var.PROXMOX_VE_SSH_NODE_ADDRESS
-    }
+    # node {
+    #   name    = var.PROXMOX_VE_SSH_NODE_NAME
+    #   address = var.PROXMOX_VE_SSH_NODE_ADDRESS
+    # }
   }
 }

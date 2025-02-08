@@ -26,7 +26,7 @@ output "ssh_node_name" {
   value = "${var.PROXMOX_VE_SSH_NODE_NAME}"
 }
 
-data "proxmox_virtual_environment_vms" "ubuntu_vms" {}
+data "proxmox_virtual_environment_vms" "vms" {}
 
 output "vms" {
   value = data.proxmox_virtual_environment_vms.vms

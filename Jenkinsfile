@@ -9,8 +9,10 @@ pipeline {
         }
         stage('Terraform Init') {
             steps {
-                echo 'Initializing Terraform...'
-                sh 'terraform init'
+                dir('terraform/proxmox') {
+                    echo 'Initializing Terraform...'
+                    sh 'terraform init'
+                }
             }
         }
         stage('Terraform Plan') {
@@ -34,8 +36,11 @@ pipeline {
         }
         stage('Terraform Apply') {
             steps {
-                echo 'Applying Terraform changes...'
-                sh 'terraform apply tfplan'
+                // Again, run within terraform/proxmox
+                dir('terraform/proxmox') {
+                    echo 'Applying Terraform changes...'
+                    sh 'terraform apply tfplan'
+                }
             }
         }
     }

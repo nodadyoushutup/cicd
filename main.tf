@@ -9,5 +9,5 @@ locals {
 }
 
 output "hello" {
-  value = "${local.hello_message} ${var.name}"
+  value = "${local.hello_message} ${var.SSH_PRIVATE_KEY}"
 }

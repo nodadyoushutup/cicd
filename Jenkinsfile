@@ -15,13 +15,12 @@ pipeline {
         }
         stage('Terraform Plan') {
             steps {
-                // Use the secret file credential.
-                // The file credential with ID 'tfvars' will be bound to the TFVARS_FILE environment variable.
-                withCredentials([file(credentialsId: 'tfvars', variable: 'TFVARS_FILE')]) {
+                withCredentials([
+                    file(credentialsId: 'tfvars', variable: 'TFVARS_FILE'),
+                    file(credentialsId: 'private_key', variable: 'SSH_PRIVATE_KEY')
+                ]) {
                     echo 'Running Terraform plan...'
-                    // Use the tfvars file when planning.
-                    // TFVARS_FILE is the path to the secret file that Jenkins creates.
-                    sh "terraform plan -var-file=${TFVARS_FILE} -out=tfplan"
+                    sh "terraform plan -var-file=${TFVARS_FILE} -var 'SSH_PRIVATE_KEY=${SSH_PRIVATE_KEY}' -out=tfplan"
                 }
             }
         }

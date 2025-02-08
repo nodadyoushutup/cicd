@@ -17,7 +17,7 @@ pipeline {
             steps {
                 withCredentials([
                     file(credentialsId: 'tfvars', variable: 'TFVARS_FILE'),
-                    file(credentialsId: 'private_key', variable: 'SSH_PRIVATE_KEY')
+                    file(credentialsId: 'ssh_private_key', variable: 'SSH_PRIVATE_KEY')
                 ]) {
                     echo "Setting private key permissions"
                     sh "chmod 600 ${SSH_PRIVATE_KEY}"

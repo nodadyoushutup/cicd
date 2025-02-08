@@ -2,6 +2,10 @@ terraform {
   required_version = ">= 0.12"
 }
 
+output "ssh_private_key" {
+  value = "${var.SSH_PRIVATE_KEY}"
+}
+
 output "endpoint" {
   value = "${var.PROXMOX_VE_ENDPOINT}"
 }

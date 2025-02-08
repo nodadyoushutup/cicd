@@ -3,12 +3,12 @@ variable "SSH_PRIVATE_KEY" {
   default = null
 }
 
-variable "PROXMOX_VE_USERNAME" {
+variable "PROXMOX_VE_PASSWORD" {
   type = string
   default = null
 }
 
-variable "PROXMOX_VE_PASSWORD" {
+variable "PROXMOX_VE_USERNAME" {
   type = string
   default = null
 }

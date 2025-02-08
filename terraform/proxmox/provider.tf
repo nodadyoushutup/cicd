@@ -14,7 +14,7 @@ provider "proxmox" {
   insecure = false
   ssh {
     agent = true
-    agent_socket = 22
+    agent_socket = 1022
     username = "root"
     private_key = file(var.SSH_PRIVATE_KEY)
     node {

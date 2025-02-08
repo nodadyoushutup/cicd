@@ -1,4 +1,9 @@
-variable "PROXMOX_VE_USERNAME" {
+variable "SSH_PRIVATE_KEY" {
+  type = string
+  default = null
+}
+
+variable "PROXMOX_VE_ENDPOINT" {
   type = string
   default = null
 }
@@ -8,7 +13,12 @@ variable "PROXMOX_VE_PASSWORD" {
   default = null
 }
 
-variable "PROXMOX_VE_ENDPOINT" {
+variable "PROXMOX_VE_USERNAME" {
+  type = string
+  default = null
+}
+
+variable "PROXMOX_VE_SSH_USERNAME" {
   type = string
   default = null
 }
@@ -24,11 +34,6 @@ variable "PROXMOX_VE_SSH_NODE_NAME" {
 }
 
 variable "VIRTUAL_MACHINE_USERNAME" {
-  type = string
-  default = null
-}
-
-variable "SSH_PRIVATE_KEY" {
   type = string
   default = null
 }

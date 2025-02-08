@@ -29,5 +29,5 @@ output "ssh_node_name" {
 data "proxmox_virtual_environment_vms" "ubuntu_vms" {}
 
 output "vms" {
-  value = data.proxmox_virtual_environment_vms
+  value = data.proxmox_virtual_environment_vms.vms
 }

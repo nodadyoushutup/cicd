@@ -1,19 +1,34 @@
 pipeline {
     agent any
+
     stages {
-        stage('Build') {
+        stage('Checkout') {
             steps {
-                echo 'Building...'
+                checkout scm
             }
         }
-        stage('Test') {
+        stage('Terraform Init') {
             steps {
-                echo 'Testing...'
+                echo 'Initializing Terraform...'
+                sh 'terraform init'
             }
         }
-        stage('Deploy') {
+        stage('Terraform Plan') {
             steps {
-                echo 'Deploying...'
+                // Use the secret file credential.
+                // The file credential with ID 'tfvars' will be bound to the TFVARS_FILE environment variable.
+                withCredentials([file(credentialsId: 'tfvars', variable: 'TFVARS_FILE')]) {
+                    echo 'Running Terraform plan...'
+                    // Use the tfvars file when planning.
+                    // TFVARS_FILE is the path to the secret file that Jenkins creates.
+                    sh "terraform plan -var-file=${TFVARS_FILE} -out=tfplan"
+                }
+            }
+        }
+        stage('Terraform Apply') {
+            steps {
+                echo 'Applying Terraform changes...'
+                sh 'terraform apply tfplan'
             }
         }
     }

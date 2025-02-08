@@ -1,4 +1,40 @@
 services: 
+  jenkins:
+    image: ghcr.io/nodadyoushutup/jenkins-controller:2.496
+    environment:
+      JAVA_OPTS: "-Djenkins.install.runSetupWizard=false"
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins:/var/jenkins_home
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://192.168.1.101:8080/whoAmI/api/json?tree=authenticated"]
+      interval: 5s
+      retries: 12
+    restart: unless-stopped
+
+  agent:
+    image: ghcr.io/nodadyoushutup/jenkins-agent:3283.v92c105e0f819-7
+    depends_on:
+      - jenkins
+    volumes:
+      - agent:/home/jenkins
+    environment:
+      JENKINS_URL: http://192.168.1.101:8080
+      JENKINS_SECRET: REPLACE_WITH_ACTUAL_AGENT_SECRET
+      JENKINS_AGENT_NAME: "simple-agent"
+    restart: unless-stopped
+    init: true
+
+  dozzle:
+    image: amir20/dozzle:latest
+    container_name: dozzle
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 8081:8080
+
   postgres: 
     image: postgres:14 
     container_name: postgres 
@@ -10,44 +46,9 @@ services:
       - "5432:5432" 
     volumes: 
       - postgres:/var/lib/postgresql/data 
- 
+
+
+volumes:
   jenkins:
-    image: jenkins/jenkins:lts
-    container_name: jenkins
-    ports:
-      - "8080:8080"
-      - "50000:50000"
-    # environment:
-    #   - JAVA_OPTS=-Djenkins.install.runSetupWizard=false
-    volumes:
-      - jenkins:/var/jenkins_home
-      - /var/run/docker.sock:/var/run/docker.sock
-
-  dozzle:
-    image: amir20/dozzle:latest
-    container_name: dozzle
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    ports:
-      - 8081:8080
-
-  # jenkins-runner:
-  #   build:
-  #     context: ./jenkins-runner
-  #   container_name: jenkins-runner
-  #   depends_on:
-  #     - jenkins
-  #   environment:
-  #     JENKINS_URL: http://jenkins:8080
-  #     JENKINS_AGENT_NAME: ansible-terraform-runner
-  #     JENKINS_SECRET: ${JENKINS_SECRET} # Replace this with the actual secret key for the agent
-  #   volumes:
-  #     - /var/run/docker.sock:/var/run/docker.sock # Allow the agent to run Docker commands
-
-volumes: 
+  agent:
   postgres: 
-    name: postgres
-    driver: local 
-  jenkins:
-    name: jenkins
-    driver: local

@@ -11,7 +11,7 @@ provider "proxmox" {
   password = var.PROXMOX_VE_PASSWORD
   username = var.PROXMOX_VE_USERNAME
   random_vm_ids = true
-  insecure = false
+  insecure = true
   ssh {
     agent = true
     agent_socket = 1022

@@ -13,6 +13,11 @@ variable "PROXMOX_VE_ENDPOINT" {
   default = null
 }
 
+variable "PROXMOX_VE_SSH_USERNAME" {
+  type = string
+  default = null
+}
+
 variable "PROXMOX_VE_SSH_NODE_ADDRESS" {
   type = string
   default = null

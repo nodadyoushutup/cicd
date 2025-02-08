@@ -9,5 +9,5 @@ locals {
 }
 
 output "hello" {
-  value = local.hello_message
+  value = "${local.hello_message} ${var.name}"
 }

@@ -157,11 +157,11 @@ resource "proxmox_virtual_environment_vm" "cicd" {
 
     initialization {
         datastore_id = "virtualization"
-        user_data_file_id = proxmox_virtual_environment_file.cicd_cloud_config.id
+        user_data_file_id = proxmox_virtual_environment_file.cloud_config.id
         
         ip_config {
             ipv4 {
-                address = "192.168.1.101/24"
+                address = "192.168.1.102/24"
                 gateway = "192.168.1.1"
             }
             ipv6 {
@@ -202,7 +202,7 @@ resource "proxmox_virtual_environment_vm" "cicd" {
         type = "l26"
     }
 
-    pool_id = "cicd"
+    # pool_id = "cicd"
 
     started = true
 

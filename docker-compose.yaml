@@ -3,7 +3,7 @@ services:
     image: ghcr.io/nodadyoushutup/jenkins-controller:2.516
     container_name: jenkins-controller
     environment:
-      JAVA_OPTS: "-Djenkins.install.runSetupWizard=false -Dcasc.jenkins.config=/jenkins/casc_config"
+      JAVA_OPTS: "-Djenkins.install.runSetupWizard=false -Dcasc.jenkins.config=/jenkins/casc_configs"
       JENKINS_SECURITY_ADMIN_USERNAME: ${JENKINS_SECURITY_ADMIN_USERNAME}
       JENKINS_SECURITY_ADMIN_PASSWORD: ${JENKINS_SECURITY_ADMIN_PASSWORD}
       JENKINS_LOCATION_URL: ${JENKINS_LOCATION_URL}
@@ -18,7 +18,7 @@ services:
     volumes:
       - jenkins-controller:/var/jenkins_home
       - ./init.groovy.d:/usr/share/jenkins/ref/init.groovy.d
-      - ./casc_configs:/jenkins/casc_config
+      - ./casc_configs:/jenkins/casc_configs
     healthcheck:
       test: ["CMD", "curl", "-f", "${JENKINS_LOCATION_URL}/whoAmI/api/json?tree=authenticated"]
       interval: 5s

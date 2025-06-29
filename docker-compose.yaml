@@ -1,0 +1,65 @@
+services:
+  jenkins-controller:
+    image: ghcr.io/nodadyoushutup/jenkins-controller:2.516
+    container_name: jenkins-controller
+    environment:
+      JAVA_OPTS: "-Djenkins.install.runSetupWizard=false -Dcasc.jenkins.config=/jenkins/casc_config"
+      JENKINS_SECURITY_ADMIN_USERNAME: ${JENKINS_SECURITY_ADMIN_USERNAME}
+      JENKINS_SECURITY_ADMIN_PASSWORD: ${JENKINS_SECURITY_ADMIN_PASSWORD}
+      JENKINS_LOCATION_URL: ${JENKINS_LOCATION_URL}
+      MINIO_ENDPOINT: ${MINIO_ENDPOINT}
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+      MINIO_CONFIG_BUCKET: ${MINIO_CONFIG_BUCKET}
+      MINIO_TERRAFORM_BUCKET: ${MINIO_TERRAFORM_BUCKET}
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins-controller:/var/jenkins_home
+      - ./init.groovy.d:/usr/share/jenkins/ref/init.groovy.d
+      - ./casc_configs:/jenkins/casc_config
+    healthcheck:
+      test: ["CMD", "curl", "-f", "${JENKINS_LOCATION_URL}/whoAmI/api/json?tree=authenticated"]
+      interval: 5s
+      retries: 12
+    restart: unless-stopped
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
+
+  jenkins-agent:
+    image: ghcr.io/nodadyoushutup/jenkins-agent:3283.v92c105e0f819-7
+    container_name: jenkins-agent
+    depends_on:
+      - jenkins-controller
+    volumes:
+      - jenkins-agent:/home/jenkins
+    environment:
+      JENKINS_URL: "${JENKINS_LOCATION_URL}"
+      JENKINS_SECRET: "${JENKINS_SECRET}"
+      JENKINS_AGENT_NAME: "simple-agent"
+    restart: unless-stopped
+    init: true
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
+
+  dozzle:
+    image: amir20/dozzle:latest
+    container_name: dozzle
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 8081:8080
+    healthcheck:
+      test: ["CMD", "/dozzle", "healthcheck"]
+      interval: 5s
+      retries: 12
+    dns:
+    - 1.1.1.1
+    - 8.8.8.8
+
+volumes:
+  jenkins-controller:
+  jenkins-agent:

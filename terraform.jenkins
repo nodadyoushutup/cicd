@@ -1,0 +1,170 @@
+pipeline { 
+    agent any 
+
+    options { 
+        ansiColor('xterm') 
+    }
+
+    
+
+    stages {
+        stage('Credential') { 
+            steps { 
+                dir("${WORKSPACE}/terraform/config") { 
+                    withCredentials([ 
+                        string(credentialsId: 'MINIO_ENDPOINT', variable: 'MINIO_ENDPOINT'), 
+                        string(credentialsId: 'MINIO_ACCESS_KEY', variable: 'MINIO_ACCESS_KEY'), 
+                        string(credentialsId: 'MINIO_SECRET_KEY', variable: 'MINIO_SECRET_KEY'), 
+                        string(credentialsId: 'MINIO_CONFIG_BUCKET', variable: 'MINIO_CONFIG_BUCKET'), 
+                        string(credentialsId: 'MINIO_TERRAFORM_BUCKET', variable: 'MINIO_TERRAFORM_BUCKET')
+                    ]) { 
+                        script { 
+                            env.MINIO_ENDPOINT = "${MINIO_ENDPOINT}"
+                            env.MINIO_ACCESS_KEY = "${MINIO_ACCESS_KEY}"
+                            env.MINIO_SECRET_KEY = "${MINIO_SECRET_KEY}"
+                            env.MINIO_CONFIG_BUCKET = "${MINIO_CONFIG_BUCKET}"
+                            env.MINIO_TERRAFORM_BUCKET = "${MINIO_TERRAFORM_BUCKET}"
+                        } 
+                    } 
+                } 
+            } 
+        } 
+
+        stage('Backend') { 
+            steps { 
+                dir("${WORKSPACE}/terraform/config") {
+                    withCredentials([ 
+                        string(credentialsId: 'MINIO_ENDPOINT', variable: 'MINIO_ENDPOINT'), 
+                        string(credentialsId: 'MINIO_ACCESS_KEY', variable: 'MINIO_ACCESS_KEY'), 
+                        string(credentialsId: 'MINIO_SECRET_KEY', variable: 'MINIO_SECRET_KEY'), 
+                        string(credentialsId: 'MINIO_CONFIG_BUCKET', variable: 'MINIO_CONFIG_BUCKET'), 
+                    ]) {
+                        script { 
+                            sh """
+                                cp ${WORKSPACE}/terraform/config/template/backend.tfvars backend.tfvars
+                            """ 
+                            sh """
+                                #!/bin/bash
+                                sed -i "s|<MINIO_TERRAFORM_BUCKET>|${MINIO_TERRAFORM_BUCKET}|g; \\
+                                        s|<MINIO_ENDPOINT>|${MINIO_ENDPOINT}|g; \\
+                                        s|<MINIO_ACCESS_KEY>|${MINIO_ACCESS_KEY}|g; \\
+                                        s|<MINIO_SECRET_KEY>|${MINIO_SECRET_KEY}|g" backend.tfvars
+                            """ 
+                            env.BACKEND_TFVARS_PATH = "${WORKSPACE}/terraform/config/backend.tfvars" 
+
+                            sh """
+                                echo "Backend path"
+                                echo "${BACKEND_TFVARS_PATH}"
+                            """
+                        } 
+                    }
+                } 
+            } 
+        } 
+
+        stage('SSH Key') { 
+            steps { 
+                dir("${WORKSPACE}/terraform/config") {
+                    withCredentials([ 
+                        string(credentialsId: 'MINIO_ENDPOINT', variable: 'MINIO_ENDPOINT'), 
+                        string(credentialsId: 'MINIO_ACCESS_KEY', variable: 'MINIO_ACCESS_KEY'), 
+                        string(credentialsId: 'MINIO_SECRET_KEY', variable: 'MINIO_SECRET_KEY'), 
+                        string(credentialsId: 'MINIO_CONFIG_BUCKET', variable: 'MINIO_CONFIG_BUCKET'), 
+                    ]) {
+                        script { 
+                            echo "Downloading SSH key files..."
+                            sh """
+                                python3 ${WORKSPACE}/terraform/config/script/ssh_key.py
+                                ls -la ~/.ssh
+                            """
+                        }
+                    }
+                }
+            }
+        } 
+
+        stage('Config Merge') { 
+            steps { 
+                dir("${WORKSPACE}/terraform/config") { 
+                    withCredentials([ 
+                        string(credentialsId: 'MINIO_ENDPOINT', variable: 'MINIO_ENDPOINT'), 
+                        string(credentialsId: 'MINIO_ACCESS_KEY', variable: 'MINIO_ACCESS_KEY'), 
+                        string(credentialsId: 'MINIO_SECRET_KEY', variable: 'MINIO_SECRET_KEY'), 
+                        string(credentialsId: 'MINIO_CONFIG_BUCKET', variable: 'MINIO_CONFIG_BUCKET'), 
+                    ]) { 
+                        script { 
+                            echo "Merging config files..."
+                            sh """
+                                python3 ${WORKSPACE}/terraform/config/script/config_merge.py
+                            """
+                        } 
+                    } 
+                } 
+            } 
+        } 
+
+        stage('Config Terraform') { 
+            steps { 
+                dir("${WORKSPACE}/terraform/config") { 
+                    withCredentials([ 
+                        string(credentialsId: 'MINIO_CONFIG_BUCKET', variable: 'MINIO_CONFIG_BUCKET'), 
+                    ]){
+                        echo "Config Terraform initializing..."
+                        sh """
+                            terraform init -backend-config=${BACKEND_TFVARS_PATH}
+                        """ 
+                        echo "Config Terraform planning..."
+                        sh """
+                            terraform plan \\
+                                -out=config_plan \\
+                                -var-file=${BACKEND_TFVARS_PATH} \\
+                                -var "minio_config_bucket=${MINIO_CONFIG_BUCKET}"
+                        """ 
+                        echo "Config Terraform applying..."
+                        sh """
+                            terraform apply config_plan
+                        """ 
+                    }
+                    
+                } 
+            } 
+        } 
+
+        stage('Job Terraform') { 
+            steps { 
+                dir("${env.subdir}") { 
+                    echo "Stack Terraform initializing..."
+                    sh """
+                        terraform init -backend-config=${BACKEND_TFVARS_PATH}
+                    """ 
+                    echo "Stack Terraform planning..."
+                    sh """
+                        terraform plan \\
+                            -out=stack_plan \\
+                            -var-file=${BACKEND_TFVARS_PATH}
+                    """
+                    echo "Stack Terraform applying..."
+                    sh """
+                        terraform apply stack_plan
+                    """ 
+                } 
+            } 
+        } 
+    }
+
+    post { 
+        always { 
+            echo "Cleaning up config files"
+            sh """
+                rm -rf "${BACKEND_TFVARS_PATH}"
+                rm -rf ~/.ssh/**
+            """ 
+        } 
+        success { 
+            echo "Pipeline completed successfully"
+        } 
+        failure { 
+            echo "Pipeline failed"
+        } 
+    } 
+}

@@ -21,4 +21,3 @@ jenkins:
               failIfWorkDirIsMissing: false
               internalDir: "remoting"
               workDirPath: "/tmp"
-

@@ -38,10 +38,11 @@ services:
     volumes:
       - jenkins-agent:/home/jenkins
       - ./secrets:/run/secrets:ro
+      - ./scripts/agent-entrypoint.sh:/usr/local/bin/agent-entrypoint.sh:ro
     environment:
       JENKINS_URL: "${JENKINS_LOCATION_URL}"
       JENKINS_AGENT_NAME: "simple-agent"
-    entrypoint: ["/bin/sh", "-c", "export JENKINS_SECRET=$(cat /run/secrets/jenkins-agent-secret); exec jenkins-agent"]
+    entrypoint: ["/usr/local/bin/agent-entrypoint.sh"]
     restart: unless-stopped
     init: true
     dns:

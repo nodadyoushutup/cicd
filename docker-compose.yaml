@@ -20,6 +20,7 @@ services:
       - jenkins-controller:/var/jenkins_home
       - ./init.groovy.d:/usr/share/jenkins/ref/init.groovy.d
       - ./casc_configs:/jenkins/casc_configs
+      - ./secrets:/run/secrets
     healthcheck:
       test: ["CMD", "curl", "-f", "${JENKINS_LOCATION_URL}/whoAmI/api/json?tree=authenticated"]
       interval: 5s
@@ -36,10 +37,11 @@ services:
       - jenkins-controller
     volumes:
       - jenkins-agent:/home/jenkins
+      - ./secrets:/run/secrets:ro
     environment:
       JENKINS_URL: "${JENKINS_LOCATION_URL}"
-      JENKINS_SECRET: "${JENKINS_SECRET}"
       JENKINS_AGENT_NAME: "simple-agent"
+    entrypoint: ["/bin/sh", "-c", "export JENKINS_SECRET=$(cat /run/secrets/jenkins-agent-secret); exec jenkins-agent"]
     restart: unless-stopped
     init: true
     dns:

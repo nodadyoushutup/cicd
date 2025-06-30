@@ -1,7 +1,7 @@
 import jenkins.model.Jenkins
 
 def agentName = 'simple-agent'
-def secretFile = new File('/run/secrets/jenkins-agent-secret')
+def secretFile = new File('/secrets/jenkins-agent-secret')
 
 try {
     def node = Jenkins.instance.getNode(agentName)
